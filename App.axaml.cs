@@ -33,6 +33,7 @@ public partial class App : Application
     public override void OnFrameworkInitializationCompleted()
     {
         var services = new ServiceCollection();
+        services.AddServices();
         services.AddViewModels();
         services.AddViews();
 

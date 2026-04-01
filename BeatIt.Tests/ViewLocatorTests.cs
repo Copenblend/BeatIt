@@ -3,8 +3,11 @@ namespace BeatIt.Tests;
 using System;
 using System.Reflection;
 using Avalonia.Controls;
+using BeatIt.Services;
 using BeatIt.ViewModels;
+using Avalonia.Headless.XUnit;
 using FluentAssertions;
+using Moq;
 using Xunit;
 
 /// <summary>
@@ -19,7 +22,7 @@ public class ViewLocatorTests
     public void Match_ViewModelBaseSubtype_ReturnsTrue()
     {
         // Arrange
-        var viewModel = new MainWindowViewModel();
+        var viewModel = new MainWindowViewModel(Mock.Of<IWindowService>());
 
         // Act
         var result = _sut.Match(viewModel);
@@ -61,7 +64,7 @@ public class ViewLocatorTests
         result.Should().BeFalse();
     }
 
-    [Fact]
+    [AvaloniaFact]
     public void Build_KnownViewModel_ReturnsMatchingView()
     {
         // Arrange
@@ -85,7 +88,7 @@ public class ViewLocatorTests
         }
     }
 
-    [Fact]
+    [AvaloniaFact]
     public void Build_UnknownViewModel_ReturnsFallbackTextBlock()
     {
         // Arrange
@@ -100,7 +103,7 @@ public class ViewLocatorTests
         ((TextBlock)result).Text.Should().Contain(nameof(OrphanViewModel));
     }
 
-    [Fact]
+    [AvaloniaFact]
     public void Build_Null_ReturnsDataIsNullTextBlock()
     {
         // Act
