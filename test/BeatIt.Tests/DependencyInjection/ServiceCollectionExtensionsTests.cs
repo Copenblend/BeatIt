@@ -88,6 +88,22 @@ public sealed class ServiceCollectionExtensionsTests
     }
 
     [Fact]
+    public void AddServices_RegistersStatusBarServiceAsSingleton()
+    {
+        // Arrange
+        var services = new ServiceCollection();
+
+        // Act
+        services.AddServices();
+
+        // Assert
+        services.Should().ContainSingle(d =>
+            d.ServiceType == typeof(IStatusBarService)
+            && d.ImplementationType == typeof(StatusBarService)
+            && d.Lifetime == ServiceLifetime.Singleton);
+    }
+
+    [Fact]
     public void AddServices_ReturnsSameServiceCollection()
     {
         // Arrange
@@ -98,5 +114,39 @@ public sealed class ServiceCollectionExtensionsTests
 
         // Assert
         result.Should().BeSameAs(services);
+    }
+
+    [Fact]
+    public void AddViewModels_RegistersStatusBarViewModelAsTransient()
+    {
+        // Arrange
+        var services = new ServiceCollection();
+
+        // Act
+        services.AddViewModels();
+
+        // Assert
+        services.Should().ContainSingle(d =>
+            d.ServiceType == typeof(StatusBarViewModel)
+            && d.Lifetime == ServiceLifetime.Transient);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="ServiceCollectionExtensions.AddViews"/>
+    /// registers <see cref="StatusBarView"/> as a transient service.
+    /// </summary>
+    [Fact]
+    public void AddViews_RegistersStatusBarViewAsTransient()
+    {
+        // Arrange
+        var services = new ServiceCollection();
+
+        // Act
+        services.AddViews();
+
+        // Assert
+        services.Should().ContainSingle(d =>
+            d.ServiceType == typeof(StatusBarView)
+            && d.Lifetime == ServiceLifetime.Transient);
     }
 }

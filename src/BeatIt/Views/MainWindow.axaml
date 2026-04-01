@@ -1,6 +1,7 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:BeatIt.ViewModels"
+        xmlns:views="using:BeatIt.Views"
         x:Class="BeatIt.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
         Title="BeatIt"
@@ -117,9 +118,6 @@
         </Grid>
 
         <!-- Row 2: Status Bar -->
-        <Border Name="StatusBarZone"
-                Grid.Row="2"
-                Background="{StaticResource WorkbenchBackground}"
-                Height="22" />
+        <views:StatusBarView Name="StatusBarZone" Grid.Row="2" />
     </Grid>
 </Window>
