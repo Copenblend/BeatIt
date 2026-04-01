@@ -1,0 +1,10 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:BeatIt.ViewModels"
+        x:Class="BeatIt.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Title="BeatIt"
+        Background="#181818"
+        Width="1280"
+        Height="720">
+</Window>
