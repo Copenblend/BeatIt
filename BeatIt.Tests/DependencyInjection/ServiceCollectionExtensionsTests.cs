@@ -1,4 +1,5 @@
 using BeatIt.DependencyInjection;
+using BeatIt.Services;
 using BeatIt.ViewModels;
 using BeatIt.Views;
 using FluentAssertions;
@@ -65,6 +66,35 @@ public sealed class ServiceCollectionExtensionsTests
 
         // Act
         var result = services.AddViews();
+
+        // Assert
+        result.Should().BeSameAs(services);
+    }
+
+    [Fact]
+    public void AddServices_RegistersWindowServiceAsSingleton()
+    {
+        // Arrange
+        var services = new ServiceCollection();
+
+        // Act
+        services.AddServices();
+
+        // Assert
+        services.Should().ContainSingle(d =>
+            d.ServiceType == typeof(IWindowService)
+            && d.ImplementationType == typeof(WindowService)
+            && d.Lifetime == ServiceLifetime.Singleton);
+    }
+
+    [Fact]
+    public void AddServices_ReturnsSameServiceCollection()
+    {
+        // Arrange
+        var services = new ServiceCollection();
+
+        // Act
+        var result = services.AddServices();
 
         // Assert
         result.Should().BeSameAs(services);

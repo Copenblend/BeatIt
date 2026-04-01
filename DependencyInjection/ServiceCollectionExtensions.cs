@@ -1,3 +1,4 @@
+using BeatIt.Services;
 using BeatIt.ViewModels;
 using BeatIt.Views;
 using Microsoft.Extensions.DependencyInjection;
@@ -9,6 +10,21 @@ namespace BeatIt.DependencyInjection;
 /// </summary>
 public static class ServiceCollectionExtensions
 {
+    /// <summary>
+    /// Registers application services with the service collection.
+    /// </summary>
+    /// <param name="services">
+    /// The service collection to register services with.
+    /// </param>
+    /// <returns>
+    /// The service collection for chaining.
+    /// </returns>
+    public static IServiceCollection AddServices(this IServiceCollection services)
+    {
+        services.AddSingleton<IWindowService, WindowService>();
+        return services;
+    }
+
     /// <summary>
     /// Registers all view models with the service collection.
     /// </summary>
