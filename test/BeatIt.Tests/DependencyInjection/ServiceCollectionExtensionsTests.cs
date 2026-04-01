@@ -183,4 +183,34 @@ public sealed class ServiceCollectionExtensionsTests
             d.ServiceType == typeof(StatusBarView)
             && d.Lifetime == ServiceLifetime.Transient);
     }
+
+    [Fact]
+    public void AddViewModels_RegistersSideBarViewModelAsSingleton()
+    {
+        // Arrange
+        var services = new ServiceCollection();
+
+        // Act
+        services.AddViewModels();
+
+        // Assert
+        services.Should().ContainSingle(d =>
+            d.ServiceType == typeof(SideBarViewModel)
+            && d.Lifetime == ServiceLifetime.Singleton);
+    }
+
+    [Fact]
+    public void AddViews_RegistersSideBarViewAsTransient()
+    {
+        // Arrange
+        var services = new ServiceCollection();
+
+        // Act
+        services.AddViews();
+
+        // Assert
+        services.Should().ContainSingle(d =>
+            d.ServiceType == typeof(SideBarView)
+            && d.Lifetime == ServiceLifetime.Transient);
+    }
 }

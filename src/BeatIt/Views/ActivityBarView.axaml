@@ -8,7 +8,8 @@
              Width="48"
              UseLayoutRounding="True"
              BorderBrush="{StaticResource DividerColor}"
-             BorderThickness="0,0,1,0">
+             BorderThickness="0,0,1,0"
+             DragDrop.AllowDrop="True">
 
     <UserControl.Styles>
         <!-- Activity bar item button base style -->

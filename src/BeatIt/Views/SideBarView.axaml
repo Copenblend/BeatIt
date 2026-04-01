@@ -1,0 +1,59 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:BeatIt.ViewModels"
+             x:Class="BeatIt.Views.SideBarView"
+             x:DataType="vm:SideBarViewModel"
+             Background="{StaticResource WorkbenchBackground}"
+             UseLayoutRounding="True"
+             BorderBrush="{StaticResource DividerColor}"
+             BorderThickness="0,0,1,0">
+
+    <UserControl.Styles>
+        <!-- Open Folder button style -->
+        <Style Selector="Button.openFolderButton">
+            <Setter Property="Background" Value="{StaticResource AccentColor}" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="Padding" Value="8,4" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="HorizontalAlignment" Value="Center" />
+        </Style>
+        <Style Selector="Button.openFolderButton:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="#2A7EA6" />
+            <Setter Property="Foreground" Value="White" />
+        </Style>
+    </UserControl.Styles>
+
+    <Grid RowDefinitions="Auto,*">
+        <!-- Header -->
+        <Border Grid.Row="0" Height="26">
+            <TextBlock Name="SideBarHeaderText"
+                       Text="EXPLORER"
+                       FontSize="11"
+                       FontWeight="Light"
+                       Foreground="{StaticResource ForegroundDefault}"
+                       LetterSpacing="1"
+                       VerticalAlignment="Center"
+                       Margin="12,0,0,0" />
+        </Border>
+
+        <!-- Content area -->
+        <Grid Grid.Row="1">
+            <!-- Resolved content from ViewLocator -->
+            <ContentControl Content="{Binding SideBarContent, Mode=OneWay}"
+                            IsVisible="{Binding HasContent, Mode=OneWay}" />
+
+            <!-- Empty state -->
+            <StackPanel Name="EmptyState"
+                        IsVisible="{Binding !HasContent, Mode=OneWay}"
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Center"
+                        Spacing="12">
+                <Button Name="OpenFolderButton"
+                        Classes="openFolderButton"
+                        Content="Open Folder"
+                        Command="{Binding OpenFolderCommand, Mode=OneWay}" />
+            </StackPanel>
+
+        </Grid>
+    </Grid>
+</UserControl>
