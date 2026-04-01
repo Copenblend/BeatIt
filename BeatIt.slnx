@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="BeatIt.csproj" />
+  <Project Path="BeatIt.Tests\BeatIt.Tests.csproj" />
+</Solution>

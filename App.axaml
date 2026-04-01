@@ -1,0 +1,20 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="BeatIt.App"
+             RequestedThemeVariant="Dark">
+    <Application.Styles>
+        <FluentTheme />
+    </Application.Styles>
+    <Application.Resources>
+        <FontFamily x:Key="CodiconFont">avares://BeatIt/Assets/Fonts/codicon.ttf#codicon</FontFamily>
+
+        <SolidColorBrush x:Key="WorkbenchBackground" Color="#181818" />
+        <SolidColorBrush x:Key="WorkspaceBackground" Color="#1F1F1F" />
+        <SolidColorBrush x:Key="AccentColor" Color="#3994BC" />
+        <SolidColorBrush x:Key="ForegroundDefault" Color="#CCCCCC" />
+        <SolidColorBrush x:Key="CloseButtonHover" Color="#E81123" />
+        <SolidColorBrush x:Key="ButtonHoverBackground" Color="#323232" />
+        <SolidColorBrush x:Key="IconDefault" Color="#8C8C8C" />
+        <SolidColorBrush x:Key="IconHover" Color="#BFBFBF" />
+    </Application.Resources>
+</Application>
