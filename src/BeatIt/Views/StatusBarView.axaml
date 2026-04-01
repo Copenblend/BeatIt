@@ -1,0 +1,19 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:BeatIt.ViewModels"
+             x:Class="BeatIt.Views.StatusBarView"
+             x:DataType="vm:StatusBarViewModel"
+             Background="{StaticResource WorkbenchBackground}"
+             Height="22"
+             UseLayoutRounding="True">
+    <Grid>
+        <TextBlock Name="StatusTextBlock"
+                   Text="{Binding StatusText, Mode=OneWay}"
+                   FontFamily="Segoe UI"
+                   FontSize="12"
+                   Foreground="{StaticResource ForegroundDefault}"
+                   VerticalAlignment="Center"
+                   HorizontalAlignment="Right"
+                   Margin="0,0,8,0" />
+    </Grid>
+</UserControl>

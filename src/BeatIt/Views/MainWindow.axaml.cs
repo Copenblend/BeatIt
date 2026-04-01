@@ -4,6 +4,8 @@ using System.Diagnostics.CodeAnalysis;
 
 using Avalonia.Controls;
 using Avalonia.Input;
+using BeatIt.ViewModels;
+using Microsoft.Extensions.DependencyInjection;
 
 /// <summary>
 /// Main application window. Provides custom title bar drag and double-click behavior.
@@ -16,6 +18,12 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
+
+        var statusBarView = this.FindControl<StatusBarView>("StatusBarZone");
+        if (statusBarView is not null)
+        {
+            statusBarView.DataContext = App.Services.GetRequiredService<StatusBarViewModel>();
+        }
     }
 
     /// <summary>

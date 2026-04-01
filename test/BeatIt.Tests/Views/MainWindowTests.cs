@@ -49,7 +49,7 @@ public class MainWindowTests
         window.FindControl<Border>("SideBarZone").Should().NotBeNull();
         window.FindControl<Border>("WorkspaceZone").Should().NotBeNull();
         window.FindControl<Border>("PanelZone").Should().NotBeNull();
-        window.FindControl<Border>("StatusBarZone").Should().NotBeNull();
+        window.FindControl<StatusBarView>("StatusBarZone").Should().NotBeNull();
         window.FindControl<Border>("TitleBarDragRegion").Should().NotBeNull();
     }
 
@@ -96,5 +96,27 @@ public class MainWindowTests
         // Act & Assert
         window.ExtendClientAreaToDecorationsHint.Should().BeTrue();
         window.ExtendClientAreaChromeHints.Should().Be(Avalonia.Platform.ExtendClientAreaChromeHints.NoChrome);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="StatusBarView"/> renders a <see cref="TextBlock"/>
+    /// named <c>StatusTextBlock</c> whose text reflects the value returned by
+    /// <see cref="IStatusBarService.StatusText"/>.
+    /// </summary>
+    [AvaloniaFact]
+    public void StatusBarView_RendersWithReadyText()
+    {
+        // Arrange
+        var statusBarService = new Mock<IStatusBarService>();
+        statusBarService.Setup(s => s.StatusText).Returns("Ready");
+        var viewModel = new StatusBarViewModel(statusBarService.Object);
+        var statusBarView = new StatusBarView { DataContext = viewModel };
+
+        // Act
+        var textBlock = statusBarView.FindControl<TextBlock>("StatusTextBlock");
+
+        // Assert
+        textBlock.Should().NotBeNull();
+        textBlock!.Text.Should().Be("Ready");
     }
 }
