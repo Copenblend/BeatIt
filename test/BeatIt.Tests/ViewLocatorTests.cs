@@ -22,7 +22,7 @@ public class ViewLocatorTests
     public void Match_ViewModelBaseSubtype_ReturnsTrue()
     {
         // Arrange
-        var viewModel = new MainWindowViewModel(Mock.Of<IWindowService>());
+        var viewModel = new MainWindowViewModel(Mock.Of<IWindowService>(), new ActivityBarViewModel());
 
         // Act
         var result = _sut.Match(viewModel);

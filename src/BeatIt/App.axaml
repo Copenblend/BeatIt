@@ -16,5 +16,6 @@
         <SolidColorBrush x:Key="ButtonHoverBackground" Color="#323232" />
         <SolidColorBrush x:Key="IconDefault" Color="#8C8C8C" />
         <SolidColorBrush x:Key="IconHover" Color="#BFBFBF" />
+        <SolidColorBrush x:Key="DividerColor" Color="#2A2B2C" />
     </Application.Resources>
 </Application>

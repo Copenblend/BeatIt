@@ -1,0 +1,83 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:BeatIt.ViewModels"
+             xmlns:views="using:BeatIt.Views"
+             x:Class="BeatIt.Views.ActivityBarView"
+             x:DataType="vm:ActivityBarViewModel"
+             Background="{StaticResource WorkbenchBackground}"
+             Width="48"
+             UseLayoutRounding="True"
+             BorderBrush="{StaticResource DividerColor}"
+             BorderThickness="0,0,1,0">
+
+    <UserControl.Styles>
+        <!-- Activity bar item button base style -->
+        <Style Selector="Button.activityBarItem">
+            <Setter Property="Width" Value="48" />
+            <Setter Property="Height" Value="48" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+        </Style>
+
+        <!-- Default icon color -->
+        <Style Selector="Button.activityBarItem TextBlock.activityBarIcon">
+            <Setter Property="Foreground" Value="{StaticResource IconDefault}" />
+        </Style>
+
+        <!-- Hovered icon color -->
+        <Style Selector="Button.activityBarItem:pointerover TextBlock.activityBarIcon">
+            <Setter Property="Foreground" Value="{StaticResource IconHover}" />
+        </Style>
+
+        <!-- Hovered button background (transparent, override template) -->
+        <Style Selector="Button.activityBarItem:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="Transparent" />
+        </Style>
+
+        <!-- Selected indicator border -->
+        <Style Selector="Border.activityBarIndicator">
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="2,0,0,0" />
+        </Style>
+
+        <!-- Selected indicator when item is selected -->
+        <Style Selector="Border.activityBarIndicator.selected">
+            <Setter Property="BorderBrush" Value="{StaticResource AccentColor}" />
+        </Style>
+
+        <!-- Selected icon color -->
+        <Style Selector="Border.activityBarIndicator.selected TextBlock.activityBarIcon">
+            <Setter Property="Foreground" Value="{StaticResource IconHover}" />
+        </Style>
+    </UserControl.Styles>
+
+    <ItemsControl Name="ActivityBarItemsControl"
+                  ItemsSource="{Binding Items, Mode=OneWay}">
+        <ItemsControl.ItemsPanel>
+            <ItemsPanelTemplate>
+                <StackPanel Orientation="Vertical" />
+            </ItemsPanelTemplate>
+        </ItemsControl.ItemsPanel>
+        <ItemsControl.ItemTemplate>
+            <DataTemplate x:DataType="vm:ActivityBarItemViewModel">
+                <Border Classes="activityBarIndicator"
+                        Classes.selected="{Binding IsSelected, Mode=OneWay}">
+                    <Button Classes="activityBarItem"
+                            Command="{Binding $parent[views:ActivityBarView].((vm:ActivityBarViewModel)DataContext).SelectItemCommand, Mode=OneWay}"
+                            CommandParameter="{Binding}"
+                            ToolTip.Tip="{Binding Label, Mode=OneWay}">
+                        <TextBlock Classes="activityBarIcon"
+                                   Text="{Binding IconGlyph, Mode=OneWay}"
+                                   FontFamily="{StaticResource CodiconFont}"
+                                   FontSize="24"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center" />
+                    </Button>
+                </Border>
+            </DataTemplate>
+        </ItemsControl.ItemTemplate>
+    </ItemsControl>
+</UserControl>
