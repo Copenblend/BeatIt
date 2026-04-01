@@ -17,15 +17,24 @@ public partial class MainWindowViewModel : ViewModelBase
     private bool _isMaximized;
 
     /// <summary>
+    /// Gets the activity bar view model for binding sidebar visibility and activity bar items.
+    /// </summary>
+    public ActivityBarViewModel ActivityBar { get; }
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="MainWindowViewModel"/> class.
     /// </summary>
     /// <param name="windowService">
     /// The window service used to perform window management operations.
     /// </param>
-    public MainWindowViewModel(IWindowService windowService)
+    /// <param name="activityBar">
+    /// The activity bar view model providing sidebar visibility and item management.
+    /// </param>
+    public MainWindowViewModel(IWindowService windowService, ActivityBarViewModel activityBar)
     {
         _windowService = windowService;
         _isMaximized = _windowService.IsMaximized;
+        ActivityBar = activityBar;
     }
 
     /// <summary>

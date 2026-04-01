@@ -39,6 +39,7 @@ public static class ServiceCollectionExtensions
     {
         services.AddTransient<MainWindowViewModel>();
         services.AddTransient<StatusBarViewModel>();
+        services.AddSingleton<ActivityBarViewModel>();
         return services;
     }
 
@@ -54,6 +55,7 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddViews(this IServiceCollection services)
     {
         services.AddTransient<MainWindow>();
+        services.AddTransient<ActivityBarView>();
         services.AddTransient<StatusBarView>();
         return services;
     }

@@ -5,7 +5,9 @@
              x:DataType="vm:StatusBarViewModel"
              Background="{StaticResource WorkbenchBackground}"
              Height="22"
-             UseLayoutRounding="True">
+             UseLayoutRounding="True"
+             BorderBrush="{StaticResource DividerColor}"
+             BorderThickness="0,1,0,0">
     <Grid>
         <TextBlock Name="StatusTextBlock"
                    Text="{Binding StatusText, Mode=OneWay}"

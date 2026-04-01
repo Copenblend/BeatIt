@@ -29,7 +29,8 @@ public class MainWindowTests
     private static MainWindow CreateWindow()
     {
         var windowService = Mock.Of<IWindowService>();
-        var viewModel = new MainWindowViewModel(windowService);
+        var activityBar = new ActivityBarViewModel();
+        var viewModel = new MainWindowViewModel(windowService, activityBar);
         return new MainWindow { DataContext = viewModel };
     }
 
@@ -45,7 +46,7 @@ public class MainWindowTests
         var window = CreateWindow();
 
         // Act & Assert
-        window.FindControl<Border>("ActivityBarZone").Should().NotBeNull();
+        window.FindControl<ActivityBarView>("ActivityBarZone").Should().NotBeNull();
         window.FindControl<Border>("SideBarZone").Should().NotBeNull();
         window.FindControl<Border>("WorkspaceZone").Should().NotBeNull();
         window.FindControl<Border>("PanelZone").Should().NotBeNull();
@@ -118,5 +119,24 @@ public class MainWindowTests
         // Assert
         textBlock.Should().NotBeNull();
         textBlock!.Text.Should().Be("Ready");
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="ActivityBarView"/> renders the default Explorer icon
+    /// and the <c>ActivityBarItemsControl</c> is present with one item.
+    /// </summary>
+    [AvaloniaFact]
+    public void ActivityBarView_RendersExplorerIcon()
+    {
+        // Arrange
+        var viewModel = new ActivityBarViewModel();
+        var activityBarView = new ActivityBarView { DataContext = viewModel };
+
+        // Act
+        var itemsControl = activityBarView.FindControl<ItemsControl>("ActivityBarItemsControl");
+
+        // Assert
+        itemsControl.Should().NotBeNull();
+        itemsControl!.ItemCount.Should().Be(2);
     }
 }

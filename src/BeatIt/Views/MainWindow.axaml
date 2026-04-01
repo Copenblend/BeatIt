@@ -40,7 +40,10 @@
     <Grid RowDefinitions="Auto,*,Auto">
 
         <!-- Row 0: Title Bar -->
-        <Grid Grid.Row="0" ColumnDefinitions="Auto,*,Auto" Background="{StaticResource WorkbenchBackground}" Height="30">
+        <Border Grid.Row="0"
+                BorderBrush="{StaticResource DividerColor}"
+                BorderThickness="0,0,0,1">
+        <Grid ColumnDefinitions="Auto,*,Auto" Background="{StaticResource WorkbenchBackground}" Height="30">
 
             <!-- Left: Icon placeholder + Menu placeholder -->
             <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
@@ -85,21 +88,24 @@
                         Command="{Binding CloseCommand, Mode=OneWay}" />
             </StackPanel>
         </Grid>
+        </Border>
 
         <!-- Row 1: Middle content area -->
         <Grid Grid.Row="1" ColumnDefinitions="Auto,Auto,*">
 
             <!-- Activity Bar -->
-            <Border Name="ActivityBarZone"
-                    Grid.Column="0"
-                    Background="{StaticResource WorkbenchBackground}"
-                    Width="48" />
+            <views:ActivityBarView Name="ActivityBarZone"
+                                   Grid.Column="0"
+                                   DataContext="{Binding ActivityBar}" />
 
             <!-- Side Bar -->
             <Border Name="SideBarZone"
                     Grid.Column="1"
                     Background="{StaticResource WorkbenchBackground}"
-                    Width="200" />
+                    Width="200"
+                    IsVisible="{Binding ActivityBar.IsSideBarVisible, Mode=OneWay}"
+                    BorderBrush="{StaticResource DividerColor}"
+                    BorderThickness="0,0,1,0" />
 
             <!-- Workspace + Panel split -->
             <Grid Grid.Column="2" RowDefinitions="*,Auto">
@@ -113,7 +119,9 @@
                 <Border Name="PanelZone"
                         Grid.Row="1"
                         Background="{StaticResource WorkbenchBackground}"
-                        Height="200" />
+                        Height="200"
+                        BorderBrush="{StaticResource DividerColor}"
+                        BorderThickness="0,1,0,0" />
             </Grid>
         </Grid>
 

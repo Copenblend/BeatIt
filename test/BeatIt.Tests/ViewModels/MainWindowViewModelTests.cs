@@ -14,6 +14,7 @@ namespace BeatIt.Tests.ViewModels;
 public sealed class MainWindowViewModelTests
 {
     private readonly Mock<IWindowService> _mockWindowService;
+    private readonly ActivityBarViewModel _activityBar = new();
 
     /// <summary>
     /// Initializes test fixtures with a mocked <see cref="IWindowService"/>.
@@ -30,7 +31,7 @@ public sealed class MainWindowViewModelTests
         _mockWindowService.Setup(s => s.IsMaximized).Returns(true);
 
         // Act
-        var sut = new MainWindowViewModel(_mockWindowService.Object);
+        var sut = new MainWindowViewModel(_mockWindowService.Object, _activityBar);
 
         // Assert
         sut.IsMaximized.Should().BeTrue();
@@ -43,7 +44,7 @@ public sealed class MainWindowViewModelTests
         _mockWindowService.Setup(s => s.IsMaximized).Returns(false);
 
         // Act
-        var sut = new MainWindowViewModel(_mockWindowService.Object);
+        var sut = new MainWindowViewModel(_mockWindowService.Object, _activityBar);
 
         // Assert
         sut.IsMaximized.Should().BeFalse();
@@ -53,7 +54,7 @@ public sealed class MainWindowViewModelTests
     public void MinimizeCommand_CallsServiceMinimize()
     {
         // Arrange
-        var sut = new MainWindowViewModel(_mockWindowService.Object);
+        var sut = new MainWindowViewModel(_mockWindowService.Object, _activityBar);
 
         // Act
         sut.MinimizeCommand.Execute(null);
@@ -66,7 +67,7 @@ public sealed class MainWindowViewModelTests
     public void MaximizeRestoreCommand_CallsServiceMaximizeRestore()
     {
         // Arrange
-        var sut = new MainWindowViewModel(_mockWindowService.Object);
+        var sut = new MainWindowViewModel(_mockWindowService.Object, _activityBar);
 
         // Act
         sut.MaximizeRestoreCommand.Execute(null);
@@ -80,7 +81,7 @@ public sealed class MainWindowViewModelTests
     {
         // Arrange
         _mockWindowService.Setup(s => s.IsMaximized).Returns(false);
-        var sut = new MainWindowViewModel(_mockWindowService.Object);
+        var sut = new MainWindowViewModel(_mockWindowService.Object, _activityBar);
 
         _mockWindowService
             .Setup(s => s.MaximizeRestore())
@@ -98,12 +99,22 @@ public sealed class MainWindowViewModelTests
     public void CloseCommand_CallsServiceClose()
     {
         // Arrange
-        var sut = new MainWindowViewModel(_mockWindowService.Object);
+        var sut = new MainWindowViewModel(_mockWindowService.Object, _activityBar);
 
         // Act
         sut.CloseCommand.Execute(null);
 
         // Assert
         _mockWindowService.Verify(s => s.Close(), Times.Once);
+    }
+
+    [Fact]
+    public void Constructor_SetsActivityBarProperty()
+    {
+        // Arrange & Act
+        var sut = new MainWindowViewModel(_mockWindowService.Object, _activityBar);
+
+        // Assert
+        sut.ActivityBar.Should().BeSameAs(_activityBar);
     }
 }

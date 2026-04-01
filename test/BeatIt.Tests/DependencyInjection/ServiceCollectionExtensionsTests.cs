@@ -131,6 +131,40 @@ public sealed class ServiceCollectionExtensionsTests
             && d.Lifetime == ServiceLifetime.Transient);
     }
 
+    [Fact]
+    public void AddViewModels_RegistersActivityBarViewModelAsSingleton()
+    {
+        // Arrange
+        var services = new ServiceCollection();
+
+        // Act
+        services.AddViewModels();
+
+        // Assert
+        services.Should().ContainSingle(d =>
+            d.ServiceType == typeof(ActivityBarViewModel)
+            && d.Lifetime == ServiceLifetime.Singleton);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="ServiceCollectionExtensions.AddViews"/>
+    /// registers <see cref="ActivityBarView"/> as a transient service.
+    /// </summary>
+    [Fact]
+    public void AddViews_RegistersActivityBarViewAsTransient()
+    {
+        // Arrange
+        var services = new ServiceCollection();
+
+        // Act
+        services.AddViews();
+
+        // Assert
+        services.Should().ContainSingle(d =>
+            d.ServiceType == typeof(ActivityBarView)
+            && d.Lifetime == ServiceLifetime.Transient);
+    }
+
     /// <summary>
     /// Verifies that <see cref="ServiceCollectionExtensions.AddViews"/>
     /// registers <see cref="StatusBarView"/> as a transient service.
