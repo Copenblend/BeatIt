@@ -13,6 +13,17 @@
         ExtendClientAreaTitleBarHeightHint="30">
 
     <Window.Styles>
+        <!-- Resize grip default style -->
+        <Style Selector="Border.resizeGrip">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Cursor" Value="SizeWestEast" />
+        </Style>
+
+        <!-- Resize grip active/dragging style -->
+        <Style Selector="Border.resizeGrip.dragging">
+            <Setter Property="Background" Value="{StaticResource AccentColor}" />
+        </Style>
+
         <!-- Base title bar button style -->
         <Style Selector="Button.titleBarButton">
             <Setter Property="Width" Value="46" />
@@ -91,7 +102,7 @@
         </Border>
 
         <!-- Row 1: Middle content area -->
-        <Grid Grid.Row="1" ColumnDefinitions="Auto,Auto,*">
+        <Grid Grid.Row="1" ColumnDefinitions="Auto,Auto,Auto,*">
 
             <!-- Activity Bar -->
             <views:ActivityBarView Name="ActivityBarZone"
@@ -99,16 +110,24 @@
                                    DataContext="{Binding ActivityBar}" />
 
             <!-- Side Bar -->
-            <Border Name="SideBarZone"
-                    Grid.Column="1"
-                    Background="{StaticResource WorkbenchBackground}"
-                    Width="200"
-                    IsVisible="{Binding ActivityBar.IsSideBarVisible, Mode=OneWay}"
-                    BorderBrush="{StaticResource DividerColor}"
-                    BorderThickness="0,0,1,0" />
+            <views:SideBarView Name="SideBarZone"
+                               Grid.Column="1"
+                               DataContext="{Binding SideBar}"
+                               Width="{Binding Width, Mode=OneWay}"
+                               IsVisible="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).ActivityBar.IsSideBarVisible, Mode=OneWay}" />
+
+            <!-- Resize grip (full height divider) -->
+            <Border Name="ResizeGrip"
+                    Grid.Column="2"
+                    Classes="resizeGrip"
+                    Width="4"
+                    IsVisible="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).ActivityBar.IsSideBarVisible, Mode=OneWay}"
+                    PointerPressed="OnResizeGripPointerPressed"
+                    PointerMoved="OnResizeGripPointerMoved"
+                    PointerReleased="OnResizeGripPointerReleased" />
 
             <!-- Workspace + Panel split -->
-            <Grid Grid.Column="2" RowDefinitions="*,Auto">
+            <Grid Grid.Column="3" RowDefinitions="*,Auto">
 
                 <!-- Workspace -->
                 <Border Name="WorkspaceZone"

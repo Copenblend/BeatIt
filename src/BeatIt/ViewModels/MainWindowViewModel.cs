@@ -22,6 +22,11 @@ public partial class MainWindowViewModel : ViewModelBase
     public ActivityBarViewModel ActivityBar { get; }
 
     /// <summary>
+    /// Gets the side bar view model for binding side bar width, content, and resize behavior.
+    /// </summary>
+    public SideBarViewModel SideBar { get; }
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="MainWindowViewModel"/> class.
     /// </summary>
     /// <param name="windowService">
@@ -30,11 +35,15 @@ public partial class MainWindowViewModel : ViewModelBase
     /// <param name="activityBar">
     /// The activity bar view model providing sidebar visibility and item management.
     /// </param>
-    public MainWindowViewModel(IWindowService windowService, ActivityBarViewModel activityBar)
+    /// <param name="sideBar">
+    /// The side bar view model providing side bar width, content, and resize behavior.
+    /// </param>
+    public MainWindowViewModel(IWindowService windowService, ActivityBarViewModel activityBar, SideBarViewModel sideBar)
     {
         _windowService = windowService;
         _isMaximized = _windowService.IsMaximized;
         ActivityBar = activityBar;
+        SideBar = sideBar;
     }
 
     /// <summary>

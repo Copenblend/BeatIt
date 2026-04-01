@@ -13,6 +13,21 @@ using Microsoft.Extensions.DependencyInjection;
 public partial class MainWindow : Window
 {
     /// <summary>
+    /// Indicates whether a resize drag operation is in progress.
+    /// </summary>
+    private bool _isDragging;
+
+    /// <summary>
+    /// The X coordinate at which the drag operation started.
+    /// </summary>
+    private double _dragStartX;
+
+    /// <summary>
+    /// The width of the side bar when the drag operation started.
+    /// </summary>
+    private double _startWidth;
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="MainWindow"/> class.
     /// </summary>
     public MainWindow()
@@ -48,5 +63,65 @@ public partial class MainWindow : Window
                 BeginMoveDrag(e);
             }
         }
+    }
+
+    /// <summary>
+    /// Handles pointer press on the resize grip to begin a drag-resize operation.
+    /// </summary>
+    /// <param name="sender">The source of the event.</param>
+    /// <param name="e">The pointer pressed event arguments.</param>
+    [ExcludeFromCodeCoverage(Justification = "Requires real pointer infrastructure for capture and position tracking.")]
+    private void OnResizeGripPointerPressed(object? sender, PointerPressedEventArgs e)
+    {
+        if (DataContext is not MainWindowViewModel vm)
+        {
+            return;
+        }
+
+        _isDragging = true;
+        _dragStartX = e.GetPosition(this).X;
+        _startWidth = vm.SideBar.Width;
+        e.Pointer.Capture(ResizeGrip);
+        ResizeGrip.Classes.Add("dragging");
+        e.Handled = true;
+    }
+
+    /// <summary>
+    /// Handles pointer move during a drag-resize operation to update the side bar width.
+    /// </summary>
+    /// <param name="sender">The source of the event.</param>
+    /// <param name="e">The pointer event arguments.</param>
+    [ExcludeFromCodeCoverage(Justification = "Requires real pointer infrastructure for capture and position tracking.")]
+    private void OnResizeGripPointerMoved(object? sender, PointerEventArgs e)
+    {
+        if (!_isDragging || DataContext is not MainWindowViewModel vm)
+        {
+            return;
+        }
+
+        var currentX = e.GetPosition(this).X;
+        var proposedWidth = _startWidth + (currentX - _dragStartX);
+        var maxWidth = Bounds.Width * 0.8;
+        vm.SideBar.Width = SideBarViewModel.ClampWidth(proposedWidth, maxWidth);
+        e.Handled = true;
+    }
+
+    /// <summary>
+    /// Handles pointer release to end the drag-resize operation.
+    /// </summary>
+    /// <param name="sender">The source of the event.</param>
+    /// <param name="e">The pointer released event arguments.</param>
+    [ExcludeFromCodeCoverage(Justification = "Requires real pointer infrastructure for capture and position tracking.")]
+    private void OnResizeGripPointerReleased(object? sender, PointerReleasedEventArgs e)
+    {
+        if (!_isDragging)
+        {
+            return;
+        }
+
+        _isDragging = false;
+        e.Pointer.Capture(null);
+        ResizeGrip.Classes.Remove("dragging");
+        e.Handled = true;
     }
 }

@@ -30,7 +30,8 @@ public class MainWindowTests
     {
         var windowService = Mock.Of<IWindowService>();
         var activityBar = new ActivityBarViewModel();
-        var viewModel = new MainWindowViewModel(windowService, activityBar);
+        var sideBar = new SideBarViewModel();
+        var viewModel = new MainWindowViewModel(windowService, activityBar, sideBar);
         return new MainWindow { DataContext = viewModel };
     }
 
@@ -47,7 +48,7 @@ public class MainWindowTests
 
         // Act & Assert
         window.FindControl<ActivityBarView>("ActivityBarZone").Should().NotBeNull();
-        window.FindControl<Border>("SideBarZone").Should().NotBeNull();
+        window.FindControl<SideBarView>("SideBarZone").Should().NotBeNull();
         window.FindControl<Border>("WorkspaceZone").Should().NotBeNull();
         window.FindControl<Border>("PanelZone").Should().NotBeNull();
         window.FindControl<StatusBarView>("StatusBarZone").Should().NotBeNull();
@@ -138,5 +139,58 @@ public class MainWindowTests
         // Assert
         itemsControl.Should().NotBeNull();
         itemsControl!.ItemCount.Should().Be(2);
+    }
+
+    /// <summary>
+    /// Verifies that the SideBarZone has a <see cref="SideBarViewModel"/> DataContext
+    /// bound via the MainWindowViewModel.SideBar property.
+    /// </summary>
+    [AvaloniaFact]
+    public void SideBarZone_HasSideBarViewModelDataContext()
+    {
+        // Arrange
+        var window = CreateWindow();
+
+        // Act
+        var sideBarView = window.FindControl<SideBarView>("SideBarZone");
+
+        // Assert
+        sideBarView.Should().NotBeNull();
+        sideBarView!.DataContext.Should().BeOfType<SideBarViewModel>();
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="SideBarView"/> displays the Open Folder button
+    /// when <see cref="SideBarViewModel.SideBarContent"/> is null.
+    /// </summary>
+    [AvaloniaFact]
+    public void SideBarView_ShowsEmptyState_WhenNoContent()
+    {
+        // Arrange
+        var viewModel = new SideBarViewModel();
+        var sideBarView = new SideBarView { DataContext = viewModel };
+
+        // Act
+        var openFolderButton = sideBarView.FindControl<Button>("OpenFolderButton");
+
+        // Assert
+        openFolderButton.Should().NotBeNull();
+    }
+
+    /// <summary>
+    /// Verifies that the <see cref="MainWindow"/> contains a resize grip
+    /// control named <c>ResizeGrip</c> in the middle content row.
+    /// </summary>
+    [AvaloniaFact]
+    public void ResizeGrip_ExistsInMainWindow()
+    {
+        // Arrange
+        var window = CreateWindow();
+
+        // Act
+        var resizeGrip = window.FindControl<Border>("ResizeGrip");
+
+        // Assert
+        resizeGrip.Should().NotBeNull();
     }
 }
