@@ -1,5 +1,6 @@
 namespace BeatIt;
 
+using System.Diagnostics.CodeAnalysis;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
@@ -11,6 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 /// <summary>
 /// Avalonia application class. Configures DI and sets up the main window.
 /// </summary>
+[ExcludeFromCodeCoverage(Justification = "DI setup and main window creation require IClassicDesktopStyleApplicationLifetime, which is unavailable in headless test environments.")]
 public partial class App : Application
 {
     /// <summary>

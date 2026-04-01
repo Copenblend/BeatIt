@@ -1,5 +1,6 @@
 namespace BeatIt;
 
+using System.Diagnostics.CodeAnalysis;
 using Avalonia;
 using Avalonia.Media;
 using Avalonia.Rendering.Composition;
@@ -7,6 +8,7 @@ using Avalonia.Rendering.Composition;
 /// <summary>
 /// Application entry point.
 /// </summary>
+[ExcludeFromCodeCoverage(Justification = "Entry point and Avalonia app builder require a real desktop windowing system and cannot execute in headless test environments.")]
 public static class Program
 {
     /// <summary>

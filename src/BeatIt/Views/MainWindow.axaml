@@ -58,19 +58,19 @@
             <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Stretch">
                 <Button Name="MinimizeButton"
                         Classes="titleBarButton"
-                        Content="&#xEBA8;"
+                        Content="&#xEABA;"
                         Command="{Binding MinimizeCommand, Mode=OneWay}" />
                 <Button Name="MaximizeRestoreButton"
                         Classes="titleBarButton"
                         Command="{Binding MaximizeRestoreCommand, Mode=OneWay}">
                     <Panel>
-                        <TextBlock Text="&#xEBA7;"
+                        <TextBlock Text="&#xEAB9;"
                                    FontFamily="{StaticResource CodiconFont}"
                                    FontSize="16"
                                    IsVisible="{Binding !IsMaximized, Mode=OneWay}"
                                    HorizontalAlignment="Center"
                                    VerticalAlignment="Center" />
-                        <TextBlock Text="&#xEBA9;"
+                        <TextBlock Text="&#xEABB;"
                                    FontFamily="{StaticResource CodiconFont}"
                                    FontSize="16"
                                    IsVisible="{Binding IsMaximized, Mode=OneWay}"
@@ -80,7 +80,7 @@
                 </Button>
                 <Button Name="CloseButton"
                         Classes="titleBarButton titleBarCloseButton"
-                        Content="&#xEBAA;"
+                        Content="&#xEAB8;"
                         Command="{Binding CloseCommand, Mode=OneWay}" />
             </StackPanel>
         </Grid>
