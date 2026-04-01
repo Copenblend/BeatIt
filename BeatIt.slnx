@@ -1,4 +1,8 @@
 <Solution>
-  <Project Path="BeatIt.csproj" />
-  <Project Path="BeatIt.Tests\BeatIt.Tests.csproj" />
+  <Folder Name="/src/">
+    <Project Path="src\BeatIt\BeatIt.csproj" />
+  </Folder>
+  <Folder Name="/test/">
+    <Project Path="test\BeatIt.Tests\BeatIt.Tests.csproj" />
+  </Folder>
 </Solution>
