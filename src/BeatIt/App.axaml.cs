@@ -5,6 +5,7 @@ using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using BeatIt.DependencyInjection;
+using BeatIt.Logging;
 using BeatIt.ViewModels;
 using BeatIt.Views;
 using Microsoft.Extensions.DependencyInjection;
@@ -40,6 +41,12 @@ public partial class App : Application
         services.AddViews();
 
         Services = services.BuildServiceProvider();
+
+        var sink = Services.GetRequiredService<ObservableLogSink>();
+        Serilog.Log.Logger = new Serilog.LoggerConfiguration()
+            .MinimumLevel.Verbose()
+            .WriteTo.Sink(sink)
+            .CreateLogger();
 
         DataTemplates.Add(new ViewLocator());
 

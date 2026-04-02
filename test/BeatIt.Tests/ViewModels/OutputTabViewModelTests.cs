@@ -1,3 +1,5 @@
+using System.Collections.ObjectModel;
+using BeatIt.Logging;
 using BeatIt.ViewModels;
 using FluentAssertions;
 using Xunit;
@@ -200,5 +202,117 @@ public sealed class OutputTabViewModelTests
     private static LogEntryViewModel CreateEntry(LogLevel level, string message = "test")
     {
         return new LogEntryViewModel(DateTimeOffset.UtcNow, level, message);
+    }
+
+    [Fact]
+    public void Constructor_WithILogSink_SetsTitleToOutput()
+    {
+        // Arrange
+        var sink = new ObservableLogSink(a => a());
+
+        // Act
+        var sut = new OutputTabViewModel(sink);
+
+        // Assert
+        sut.Title.Should().Be("Output");
+    }
+
+    [Fact]
+    public void ILogSink_WhenEntryEmitted_AppearsInFilteredEntries()
+    {
+        // Arrange
+        var sink = new ObservableLogSink(a => a());
+        var sut = new OutputTabViewModel(sink);
+
+        // Act
+        sink.AddEntry(new LogEntry(DateTimeOffset.UtcNow, LogLevel.Info, "hello"));
+
+        // Assert
+        sut.FilteredEntries.Should().ContainSingle()
+            .Which.Message.Should().Be("hello");
+    }
+
+    [Fact]
+    public void ILogSink_WhenEntryBelowFilterLevel_DoesNotAppearInFilteredEntries()
+    {
+        // Arrange
+        var sink = new ObservableLogSink(a => a());
+        var sut = new OutputTabViewModel(sink);
+        sut.SelectedLogLevel = LogLevel.Warn;
+
+        // Act
+        sink.AddEntry(new LogEntry(DateTimeOffset.UtcNow, LogLevel.Debug, "should not appear"));
+
+        // Assert
+        sut.FilteredEntries.Should().BeEmpty();
+    }
+
+    [Fact]
+    public void ILogSink_MultipleEntries_FlowThroughCorrectly()
+    {
+        // Arrange
+        var sink = new ObservableLogSink(a => a());
+        var sut = new OutputTabViewModel(sink);
+
+        // Act
+        sink.AddEntry(new LogEntry(DateTimeOffset.UtcNow, LogLevel.Info, "one"));
+        sink.AddEntry(new LogEntry(DateTimeOffset.UtcNow, LogLevel.Warn, "two"));
+        sink.AddEntry(new LogEntry(DateTimeOffset.UtcNow, LogLevel.Error, "three"));
+
+        // Assert
+        sut.FilteredEntries.Should().HaveCount(3);
+        sut.FilteredEntries[0].Message.Should().Be("one");
+        sut.FilteredEntries[1].Message.Should().Be("two");
+        sut.FilteredEntries[2].Message.Should().Be("three");
+    }
+
+    [Fact]
+    public void ILogSink_EntryProperties_ArePreservedInConversion()
+    {
+        // Arrange
+        var sink = new ObservableLogSink(a => a());
+        var sut = new OutputTabViewModel(sink);
+        var timestamp = new DateTimeOffset(2026, 4, 1, 12, 0, 0, TimeSpan.Zero);
+
+        // Act
+        sink.AddEntry(new LogEntry(timestamp, LogLevel.Warn, "preserved"));
+
+        // Assert
+        var vm = sut.FilteredEntries.Should().ContainSingle().Subject;
+        vm.Timestamp.Should().Be(timestamp);
+        vm.Level.Should().Be(LogLevel.Warn);
+        vm.Message.Should().Be("preserved");
+    }
+
+    [Fact]
+    public void ILogSink_WhenCollectionReset_ClearsFilteredEntries()
+    {
+        // Arrange
+        var entries = new ObservableCollection<LogEntry>();
+        var readOnly = new ReadOnlyObservableCollection<LogEntry>(entries);
+        var sink = new TestLogSink(readOnly);
+
+        var sut = new OutputTabViewModel(sink);
+
+        // Add entries via the underlying collection (simulating sink additions)
+        entries.Add(new LogEntry(DateTimeOffset.UtcNow, LogLevel.Info, "msg1"));
+        entries.Add(new LogEntry(DateTimeOffset.UtcNow, LogLevel.Warn, "msg2"));
+        sut.FilteredEntries.Should().HaveCount(2);
+
+        // Act — Clear triggers Reset
+        entries.Clear();
+
+        // Assert
+        sut.FilteredEntries.Should().BeEmpty();
+    }
+
+    private sealed class TestLogSink : ILogSink
+    {
+        public ReadOnlyObservableCollection<LogEntry> Entries { get; }
+
+        public TestLogSink(ReadOnlyObservableCollection<LogEntry> entries)
+        {
+            Entries = entries;
+        }
     }
 }
