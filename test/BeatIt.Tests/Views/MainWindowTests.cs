@@ -30,9 +30,10 @@ public class MainWindowTests
     {
         var windowService = Mock.Of<IWindowService>();
         var activityBar = new ActivityBarViewModel();
-        var sideBar = new SideBarViewModel();
+        var explorerViewModel = new ExplorerViewModel(Mock.Of<IFolderPickerService>(), Mock.Of<IFileSystemService>());
+        var sideBar = new SideBarViewModel(explorerViewModel);
         var panel = new PanelViewModel(new OutputTabViewModel());
-        var menuBar = new MenuBarViewModel();
+        var menuBar = new MenuBarViewModel(explorerViewModel);
         var viewModel = new MainWindowViewModel(windowService, activityBar, sideBar, panel, menuBar);
         return new MainWindow { DataContext = viewModel };
     }
@@ -190,7 +191,8 @@ public class MainWindowTests
     public void SideBarView_ShowsEmptyState_WhenNoContent()
     {
         // Arrange
-        var viewModel = new SideBarViewModel();
+        var explorerViewModel = new ExplorerViewModel(Mock.Of<IFolderPickerService>(), Mock.Of<IFileSystemService>());
+        var viewModel = new SideBarViewModel(explorerViewModel);
         var sideBarView = new SideBarView { DataContext = viewModel };
 
         // Act

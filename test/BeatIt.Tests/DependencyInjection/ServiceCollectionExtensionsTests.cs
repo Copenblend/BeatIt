@@ -358,4 +358,82 @@ public sealed class ServiceCollectionExtensionsTests
             d.ServiceType == typeof(MenuBarView)
             && d.Lifetime == ServiceLifetime.Transient);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="ServiceCollectionExtensions.AddServices"/>
+    /// registers <see cref="IFolderPickerService"/> backed by <see cref="FolderPickerService"/> as a singleton.
+    /// </summary>
+    [Fact]
+    public void AddServices_RegistersFolderPickerServiceAsSingleton()
+    {
+        // Arrange
+        var services = new ServiceCollection();
+
+        // Act
+        services.AddServices();
+
+        // Assert
+        services.Should().ContainSingle(d =>
+            d.ServiceType == typeof(IFolderPickerService)
+            && d.ImplementationType == typeof(FolderPickerService)
+            && d.Lifetime == ServiceLifetime.Singleton);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="ServiceCollectionExtensions.AddServices"/>
+    /// registers <see cref="IFileSystemService"/> backed by <see cref="FileSystemService"/> as a singleton.
+    /// </summary>
+    [Fact]
+    public void AddServices_RegistersFileSystemServiceAsSingleton()
+    {
+        // Arrange
+        var services = new ServiceCollection();
+
+        // Act
+        services.AddServices();
+
+        // Assert
+        services.Should().ContainSingle(d =>
+            d.ServiceType == typeof(IFileSystemService)
+            && d.ImplementationType == typeof(FileSystemService)
+            && d.Lifetime == ServiceLifetime.Singleton);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="ServiceCollectionExtensions.AddViewModels"/>
+    /// registers <see cref="ExplorerViewModel"/> as a singleton service.
+    /// </summary>
+    [Fact]
+    public void AddViewModels_RegistersExplorerViewModelAsSingleton()
+    {
+        // Arrange
+        var services = new ServiceCollection();
+
+        // Act
+        services.AddViewModels();
+
+        // Assert
+        services.Should().ContainSingle(d =>
+            d.ServiceType == typeof(ExplorerViewModel)
+            && d.Lifetime == ServiceLifetime.Singleton);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="ServiceCollectionExtensions.AddViews"/>
+    /// registers <see cref="ExplorerView"/> as a transient service.
+    /// </summary>
+    [Fact]
+    public void AddViews_RegistersExplorerViewAsTransient()
+    {
+        // Arrange
+        var services = new ServiceCollection();
+
+        // Act
+        services.AddViews();
+
+        // Assert
+        services.Should().ContainSingle(d =>
+            d.ServiceType == typeof(ExplorerView)
+            && d.Lifetime == ServiceLifetime.Transient);
+    }
 }

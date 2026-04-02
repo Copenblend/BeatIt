@@ -1,5 +1,7 @@
+using BeatIt.Services;
 using BeatIt.ViewModels;
 using FluentAssertions;
+using Moq;
 using Xunit;
 
 namespace BeatIt.Tests.ViewModels;
@@ -15,7 +17,7 @@ public sealed class SideBarViewModelTests
     public void Constructor_SetsDefaultWidth()
     {
         // Arrange & Act
-        var sut = new SideBarViewModel();
+        var sut = new SideBarViewModel(CreateExplorerViewModel());
 
         // Assert
         sut.Width.Should().Be(250.0);
@@ -25,7 +27,7 @@ public sealed class SideBarViewModelTests
     public void Constructor_SetsSideBarContentToNull()
     {
         // Arrange & Act
-        var sut = new SideBarViewModel();
+        var sut = new SideBarViewModel(CreateExplorerViewModel());
 
         // Assert
         sut.SideBarContent.Should().BeNull();
@@ -35,7 +37,7 @@ public sealed class SideBarViewModelTests
     public void Constructor_SetsHasContentToFalse()
     {
         // Arrange & Act
-        var sut = new SideBarViewModel();
+        var sut = new SideBarViewModel(CreateExplorerViewModel());
 
         // Assert
         sut.HasContent.Should().BeFalse();
@@ -45,7 +47,7 @@ public sealed class SideBarViewModelTests
     public void Width_WhenChanged_RaisesPropertyChanged()
     {
         // Arrange
-        var sut = new SideBarViewModel();
+        var sut = new SideBarViewModel(CreateExplorerViewModel());
         using var monitor = sut.Monitor();
 
         // Act
@@ -59,7 +61,7 @@ public sealed class SideBarViewModelTests
     public void SideBarContent_WhenChanged_RaisesPropertyChangedForSideBarContent()
     {
         // Arrange
-        var sut = new SideBarViewModel();
+        var sut = new SideBarViewModel(CreateExplorerViewModel());
         using var monitor = sut.Monitor();
         var content = new TestContentViewModel();
 
@@ -74,7 +76,7 @@ public sealed class SideBarViewModelTests
     public void SideBarContent_WhenChanged_RaisesPropertyChangedForHasContent()
     {
         // Arrange
-        var sut = new SideBarViewModel();
+        var sut = new SideBarViewModel(CreateExplorerViewModel());
         using var monitor = sut.Monitor();
         var content = new TestContentViewModel();
 
@@ -89,7 +91,7 @@ public sealed class SideBarViewModelTests
     public void HasContent_WhenSideBarContentIsSet_ReturnsTrue()
     {
         // Arrange
-        var sut = new SideBarViewModel();
+        var sut = new SideBarViewModel(CreateExplorerViewModel());
 
         // Act
         sut.SideBarContent = new TestContentViewModel();
@@ -102,7 +104,7 @@ public sealed class SideBarViewModelTests
     public void HasContent_WhenSideBarContentIsSetBackToNull_ReturnsFalse()
     {
         // Arrange
-        var sut = new SideBarViewModel();
+        var sut = new SideBarViewModel(CreateExplorerViewModel());
         sut.SideBarContent = new TestContentViewModel();
 
         // Act
@@ -116,7 +118,7 @@ public sealed class SideBarViewModelTests
     public void OpenFolderCommand_CanExecute_DoesNotThrow()
     {
         // Arrange
-        var sut = new SideBarViewModel();
+        var sut = new SideBarViewModel(CreateExplorerViewModel());
 
         // Act
         var act = () => sut.OpenFolderCommand.Execute(null);
@@ -193,6 +195,59 @@ public sealed class SideBarViewModelTests
 
         // Assert
         result.Should().Be(500.0);
+    }
+
+    /// <summary>
+    /// Verifies that the OpenFolderCommand delegates to the ExplorerViewModel's OpenFolderCommand.
+    /// </summary>
+    [Fact]
+    public void OpenFolderCommand_DelegatesToExplorerViewModel()
+    {
+        // Arrange
+        var explorer = CreateExplorerViewModel();
+        var sut = new SideBarViewModel(explorer);
+
+        // Act & Assert
+        sut.OpenFolderCommand.Should().BeSameAs(explorer.OpenFolderCommand);
+    }
+
+    /// <summary>
+    /// Verifies that when the explorer's FolderName changes to a non-empty value,
+    /// the SideBarContent is set to the explorer view model.
+    /// </summary>
+    [Fact]
+    public async Task ExplorerFolderNameChanged_SetsSideBarContentToExplorer()
+    {
+        // Arrange
+        var mockPicker = new Mock<IFolderPickerService>();
+        mockPicker.Setup(p => p.PickFolderAsync())
+            .ReturnsAsync(@"C:\test\MyFolder");
+
+        var mockFs = new Mock<IFileSystemService>();
+        mockFs.Setup(fs => fs.GetEntriesAsync(@"C:\test\MyFolder"))
+            .ReturnsAsync(Array.Empty<FileSystemEntry>());
+
+        var explorer = new ExplorerViewModel(mockPicker.Object, mockFs.Object);
+        var sut = new SideBarViewModel(explorer);
+
+        // Act
+        await explorer.OpenFolderCommand.ExecuteAsync(null);
+
+        // Assert
+        sut.SideBarContent.Should().BeSameAs(explorer);
+    }
+
+    /// <summary>
+    /// Creates a default <see cref="ExplorerViewModel"/> with mocked dependencies.
+    /// </summary>
+    /// <returns>
+    /// An <see cref="ExplorerViewModel"/> configured with <see cref="Moq.Mock"/> services.
+    /// </returns>
+    private static ExplorerViewModel CreateExplorerViewModel()
+    {
+        return new ExplorerViewModel(
+            Mock.Of<IFolderPickerService>(),
+            Mock.Of<IFileSystemService>());
     }
 
     /// <summary>

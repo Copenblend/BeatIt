@@ -14,10 +14,11 @@ namespace BeatIt.Tests.ViewModels;
 public sealed class MainWindowViewModelTests
 {
     private readonly Mock<IWindowService> _mockWindowService;
+    private readonly ExplorerViewModel _explorerViewModel = new(Mock.Of<IFolderPickerService>(), Mock.Of<IFileSystemService>());
     private readonly ActivityBarViewModel _activityBar = new();
-    private readonly SideBarViewModel _sideBar = new();
+    private readonly SideBarViewModel _sideBar;
     private readonly PanelViewModel _panel = new(new OutputTabViewModel());
-    private readonly MenuBarViewModel _menuBar = new();
+    private readonly MenuBarViewModel _menuBar;
 
     /// <summary>
     /// Initializes test fixtures with a mocked <see cref="IWindowService"/>.
@@ -25,6 +26,8 @@ public sealed class MainWindowViewModelTests
     public MainWindowViewModelTests()
     {
         _mockWindowService = new Mock<IWindowService>();
+        _sideBar = new SideBarViewModel(_explorerViewModel);
+        _menuBar = new MenuBarViewModel(_explorerViewModel);
     }
 
     [Fact]

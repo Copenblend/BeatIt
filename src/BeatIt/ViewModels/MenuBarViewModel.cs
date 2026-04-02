@@ -6,23 +6,25 @@ namespace BeatIt.ViewModels;
 /// View model for the application menu bar.
 /// Provides commands for file operations such as opening and closing folders.
 /// </summary>
-/// <remarks>
-/// Commands are placeholder no-ops that will be wired to real
-/// functionality in future slices.
-/// </remarks>
 public partial class MenuBarViewModel : ViewModelBase
 {
+    private readonly ExplorerViewModel _explorerViewModel;
+
     /// <summary>
-    /// Opens a folder in the workspace.
+    /// Initializes a new instance of the <see cref="MenuBarViewModel"/> class.
     /// </summary>
-    /// <remarks>
-    /// This is a placeholder command that will be wired to real
-    /// folder-open logic in a future slice.
-    /// </remarks>
-    [RelayCommand]
-    private void OpenFolder()
+    /// <param name="explorerViewModel">
+    /// The explorer view model providing folder-open functionality.
+    /// </param>
+    public MenuBarViewModel(ExplorerViewModel explorerViewModel)
     {
+        _explorerViewModel = explorerViewModel;
     }
+
+    /// <summary>
+    /// Gets the command that opens a folder picker and loads the selected folder.
+    /// </summary>
+    public IRelayCommand OpenFolderCommand => _explorerViewModel.OpenFolderCommand;
 
     /// <summary>
     /// Closes the currently open folder in the workspace.

@@ -1,3 +1,5 @@
+using System.ComponentModel;
+
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
@@ -8,6 +10,19 @@ namespace BeatIt.ViewModels;
 /// </summary>
 public partial class SideBarViewModel : ViewModelBase
 {
+    private readonly ExplorerViewModel _explorerViewModel;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="SideBarViewModel"/> class.
+    /// </summary>
+    /// <param name="explorerViewModel">
+    /// The explorer view model providing folder-open functionality and file tree content.
+    /// </param>
+    public SideBarViewModel(ExplorerViewModel explorerViewModel)
+    {
+        _explorerViewModel = explorerViewModel;
+        _explorerViewModel.PropertyChanged += OnExplorerPropertyChanged;
+    }
     /// <summary>
     /// The minimum width in pixels before the side bar snaps closed.
     /// </summary>
@@ -66,10 +81,26 @@ public partial class SideBarViewModel : ViewModelBase
     }
 
     /// <summary>
-    /// Placeholder command for opening a folder. Implementation deferred to Slice 8.
+    /// Gets the command that opens a folder picker and loads the selected folder.
     /// </summary>
-    [RelayCommand]
-    private void OpenFolder()
+    public IRelayCommand OpenFolderCommand => _explorerViewModel.OpenFolderCommand;
+
+    /// <summary>
+    /// Handles property changes on the explorer view model.
+    /// Sets <see cref="SideBarContent"/> to the explorer when a folder is opened.
+    /// </summary>
+    /// <param name="sender">
+    /// The source of the event.
+    /// </param>
+    /// <param name="e">
+    /// The event arguments containing the changed property name.
+    /// </param>
+    private void OnExplorerPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
+        if (e.PropertyName == nameof(ExplorerViewModel.FolderName)
+            && !string.IsNullOrEmpty(_explorerViewModel.FolderName))
+        {
+            SideBarContent = _explorerViewModel;
+        }
     }
 }
