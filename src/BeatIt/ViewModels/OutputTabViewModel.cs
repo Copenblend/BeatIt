@@ -1,4 +1,6 @@
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using BeatIt.Logging;
 using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace BeatIt.ViewModels;
@@ -37,6 +39,38 @@ public partial class OutputTabViewModel : PanelTabViewModel
     public OutputTabViewModel()
         : base("Output")
     {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="OutputTabViewModel"/> class
+    /// wired to an <see cref="ILogSink"/> for automatic log entry observation.
+    /// </summary>
+    /// <param name="logSink">
+    /// The log sink whose entries will be observed and displayed.
+    /// </param>
+    public OutputTabViewModel(ILogSink logSink)
+        : base("Output")
+    {
+        ((INotifyCollectionChanged)logSink.Entries).CollectionChanged += OnLogSinkEntriesChanged;
+    }
+
+    private void OnLogSinkEntriesChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        switch (e.Action)
+        {
+            case NotifyCollectionChangedAction.Add when e.NewItems is not null:
+                foreach (LogEntry entry in e.NewItems)
+                {
+                    AddEntry(new LogEntryViewModel(entry.Timestamp, entry.Level, entry.Message));
+                }
+
+                break;
+
+            case NotifyCollectionChangedAction.Reset:
+                _allEntries.Clear();
+                FilteredEntries.Clear();
+                break;
+        }
     }
 
     /// <summary>

@@ -1,3 +1,4 @@
+using BeatIt.Logging;
 using BeatIt.Services;
 using BeatIt.ViewModels;
 using BeatIt.Views;
@@ -21,6 +22,8 @@ public static class ServiceCollectionExtensions
     /// </returns>
     public static IServiceCollection AddServices(this IServiceCollection services)
     {
+        services.AddSingleton<ObservableLogSink>();
+        services.AddSingleton<ILogSink>(sp => sp.GetRequiredService<ObservableLogSink>());
         services.AddSingleton<IWindowService, WindowService>();
         services.AddSingleton<IStatusBarService, StatusBarService>();
         return services;

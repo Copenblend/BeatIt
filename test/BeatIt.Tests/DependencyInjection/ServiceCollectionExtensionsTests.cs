@@ -1,4 +1,5 @@
 using BeatIt.DependencyInjection;
+using BeatIt.Logging;
 using BeatIt.Services;
 using BeatIt.ViewModels;
 using BeatIt.Views;
@@ -288,5 +289,35 @@ public sealed class ServiceCollectionExtensionsTests
         services.Should().ContainSingle(d =>
             d.ServiceType == typeof(OutputTabView)
             && d.Lifetime == ServiceLifetime.Transient);
+    }
+
+    [Fact]
+    public void AddServices_RegistersObservableLogSinkAsSingleton()
+    {
+        // Arrange
+        var services = new ServiceCollection();
+
+        // Act
+        services.AddServices();
+
+        // Assert
+        services.Should().ContainSingle(d =>
+            d.ServiceType == typeof(ObservableLogSink)
+            && d.Lifetime == ServiceLifetime.Singleton);
+    }
+
+    [Fact]
+    public void AddServices_RegistersILogSinkAsSingleton()
+    {
+        // Arrange
+        var services = new ServiceCollection();
+
+        // Act
+        services.AddServices();
+
+        // Assert
+        services.Should().ContainSingle(d =>
+            d.ServiceType == typeof(ILogSink)
+            && d.Lifetime == ServiceLifetime.Singleton);
     }
 }
