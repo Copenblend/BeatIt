@@ -320,4 +320,42 @@ public sealed class ServiceCollectionExtensionsTests
             d.ServiceType == typeof(ILogSink)
             && d.Lifetime == ServiceLifetime.Singleton);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="ServiceCollectionExtensions.AddViewModels"/>
+    /// registers <see cref="MenuBarViewModel"/> as a singleton service.
+    /// </summary>
+    [Fact]
+    public void AddViewModels_RegistersMenuBarViewModelAsSingleton()
+    {
+        // Arrange
+        var services = new ServiceCollection();
+
+        // Act
+        services.AddViewModels();
+
+        // Assert
+        services.Should().ContainSingle(d =>
+            d.ServiceType == typeof(MenuBarViewModel)
+            && d.Lifetime == ServiceLifetime.Singleton);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="ServiceCollectionExtensions.AddViews"/>
+    /// registers <see cref="MenuBarView"/> as a transient service.
+    /// </summary>
+    [Fact]
+    public void AddViews_RegistersMenuBarViewAsTransient()
+    {
+        // Arrange
+        var services = new ServiceCollection();
+
+        // Act
+        services.AddViews();
+
+        // Assert
+        services.Should().ContainSingle(d =>
+            d.ServiceType == typeof(MenuBarView)
+            && d.Lifetime == ServiceLifetime.Transient);
+    }
 }

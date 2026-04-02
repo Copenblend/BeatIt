@@ -99,10 +99,10 @@
                 BorderThickness="0,0,0,1">
         <Grid ColumnDefinitions="Auto,*,Auto" Background="{StaticResource WorkbenchBackground}" Height="30">
 
-            <!-- Left: Icon placeholder + Menu placeholder -->
+            <!-- Left: Icon placeholder + Menu Bar -->
             <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
                 <Border Width="16" Height="16" Margin="8,0,0,0" />
-                <ContentControl Name="MenuBarPlaceholder" Margin="4,0,0,0" />
+                <views:MenuBarView Name="MenuBarZone" DataContext="{Binding MenuBar}" Margin="4,0,0,0" />
             </StackPanel>
 
             <!-- Center: Drag region -->

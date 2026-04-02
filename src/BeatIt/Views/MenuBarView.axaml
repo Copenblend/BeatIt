@@ -1,0 +1,76 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:BeatIt.ViewModels"
+             x:Class="BeatIt.Views.MenuBarView"
+             x:DataType="vm:MenuBarViewModel">
+
+    <UserControl.Styles>
+        <!-- Menu bar: transparent background, no border -->
+        <Style Selector="Menu.menuBar">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Padding" Value="0" />
+        </Style>
+
+        <!-- Top-level MenuItem: rest state -->
+        <Style Selector="Menu.menuBar > MenuItem">
+            <Setter Property="Foreground" Value="{StaticResource ForegroundDefault}" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="CornerRadius" Value="4" />
+            <Setter Property="Padding" Value="8,4" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="MinHeight" Value="0" />
+        </Style>
+
+        <!-- Top-level MenuItem: hover state -->
+        <Style Selector="Menu.menuBar > MenuItem:pointerover">
+            <Setter Property="Foreground" Value="{StaticResource IconHover}" />
+        </Style>
+        <Style Selector="Menu.menuBar > MenuItem:pointerover /template/ Border#PART_LayoutRoot">
+            <Setter Property="Background" Value="{StaticResource ButtonHoverBackground}" />
+        </Style>
+
+        <!-- Top-level MenuItem: pressed / open state -->
+        <Style Selector="Menu.menuBar > MenuItem:pressed /template/ Border#PART_LayoutRoot">
+            <Setter Property="Background" Value="{StaticResource ButtonHoverBackground}" />
+        </Style>
+        <Style Selector="Menu.menuBar > MenuItem:open /template/ Border#PART_LayoutRoot">
+            <Setter Property="Background" Value="{StaticResource ButtonHoverBackground}" />
+        </Style>
+
+        <!-- Dropdown (MenuFlyoutPresenter / Popup) background & border -->
+        <Style Selector="Menu.menuBar MenuItem Popup Border">
+            <Setter Property="Background" Value="#2D2D2D" />
+            <Setter Property="BorderBrush" Value="#454545" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="4" />
+            <Setter Property="Padding" Value="0,4" />
+        </Style>
+
+        <!-- Submenu MenuItem: rest state -->
+        <Style Selector="Menu.menuBar MenuItem MenuItem">
+            <Setter Property="Foreground" Value="{StaticResource ForegroundDefault}" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Padding" Value="8,4" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="MinHeight" Value="0" />
+        </Style>
+
+        <!-- Submenu MenuItem: hover state -->
+        <Style Selector="Menu.menuBar MenuItem MenuItem:pointerover">
+            <Setter Property="Foreground" Value="{StaticResource IconHover}" />
+        </Style>
+        <Style Selector="Menu.menuBar MenuItem MenuItem:pointerover /template/ Border#PART_LayoutRoot">
+            <Setter Property="Background" Value="{StaticResource ButtonHoverBackground}" />
+        </Style>
+    </UserControl.Styles>
+
+    <Menu Name="MainMenu" Classes="menuBar">
+        <MenuItem Header="File">
+            <MenuItem Header="Open Folder"
+                      Command="{Binding OpenFolderCommand, Mode=OneWay}" />
+            <MenuItem Header="Close Folder"
+                      Command="{Binding CloseFolderCommand, Mode=OneWay}" />
+        </MenuItem>
+    </Menu>
+</UserControl>
