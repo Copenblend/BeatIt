@@ -15,10 +15,22 @@ public partial class ExplorerViewModel : ViewModelBase
     private readonly IFileSystemService _fileSystemService;
 
     /// <summary>
+    /// Gets or sets the selected file tree node in the explorer.
+    /// </summary>
+    /// <remarks>
+    /// Setting this property triggers click handling: directories toggle expansion,
+    /// files log the click. The property resets to <see langword="null"/> after processing
+    /// to allow re-clicking the same node.
+    /// </remarks>
+    [ObservableProperty]
+    private FileTreeNodeViewModel? _selectedNode;
+
+    /// <summary>
     /// Gets or sets the display name of the currently open folder.
     /// </summary>
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(HasFolder))]
+    [NotifyCanExecuteChangedFor(nameof(CloseFolderCommand))]
     private string? _folderName;
 
     /// <summary>
@@ -78,5 +90,43 @@ public partial class ExplorerViewModel : ViewModelBase
         }
 
         Log.Verbose("Folder {FolderName} open by user.", FolderName);
+    }
+
+    /// <summary>
+    /// Closes the currently open folder, clearing the file tree and folder name.
+    /// </summary>
+    [RelayCommand(CanExecute = nameof(HasFolder))]
+    private void CloseFolder()
+    {
+        var previousFolderName = FolderName;
+        RootNodes.Clear();
+        FolderName = null;
+        Log.Verbose("Folder {FolderName} closed by user.", previousFolderName);
+    }
+
+    /// <summary>
+    /// Handles selection changes: toggles directory expansion or logs file clicks,
+    /// then resets the selection to allow re-clicking the same node.
+    /// </summary>
+    /// <param name="value">
+    /// The newly selected node, or <see langword="null"/> when the selection is reset.
+    /// </param>
+    partial void OnSelectedNodeChanged(FileTreeNodeViewModel? value)
+    {
+        if (value is null)
+        {
+            return;
+        }
+
+        if (value.IsDirectory)
+        {
+            value.IsExpanded = !value.IsExpanded;
+        }
+        else
+        {
+            Log.Verbose("User clicked {FileName}.{FileExtension}", value.Name, value.Extension);
+        }
+
+        SelectedNode = null;
     }
 }

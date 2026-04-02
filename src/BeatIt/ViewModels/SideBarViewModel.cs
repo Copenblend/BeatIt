@@ -97,10 +97,16 @@ public partial class SideBarViewModel : ViewModelBase
     /// </param>
     private void OnExplorerPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
-        if (e.PropertyName == nameof(ExplorerViewModel.FolderName)
-            && !string.IsNullOrEmpty(_explorerViewModel.FolderName))
+        if (e.PropertyName == nameof(ExplorerViewModel.FolderName))
         {
-            SideBarContent = _explorerViewModel;
+            if (!string.IsNullOrEmpty(_explorerViewModel.FolderName))
+            {
+                SideBarContent = _explorerViewModel;
+            }
+            else
+            {
+                SideBarContent = null;
+            }
         }
     }
 }
