@@ -26,6 +26,8 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<ILogSink>(sp => sp.GetRequiredService<ObservableLogSink>());
         services.AddSingleton<IWindowService, WindowService>();
         services.AddSingleton<IStatusBarService, StatusBarService>();
+        services.AddSingleton<IFolderPickerService, FolderPickerService>();
+        services.AddSingleton<IFileSystemService, FileSystemService>();
         return services;
     }
 
@@ -43,6 +45,7 @@ public static class ServiceCollectionExtensions
         services.AddTransient<MainWindowViewModel>();
         services.AddTransient<StatusBarViewModel>();
         services.AddSingleton<ActivityBarViewModel>();
+        services.AddSingleton<ExplorerViewModel>();
         services.AddSingleton<SideBarViewModel>();
         services.AddSingleton<OutputTabViewModel>();
         services.AddSingleton<PanelViewModel>();
@@ -68,6 +71,7 @@ public static class ServiceCollectionExtensions
         services.AddTransient<PanelView>();
         services.AddTransient<OutputTabView>();
         services.AddTransient<MenuBarView>();
+        services.AddTransient<ExplorerView>();
         return services;
     }
 }

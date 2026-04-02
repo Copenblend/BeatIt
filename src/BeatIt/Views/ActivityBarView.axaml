@@ -6,9 +6,9 @@
              x:DataType="vm:ActivityBarViewModel"
              Background="{StaticResource WorkbenchBackground}"
              Width="48"
-             UseLayoutRounding="True"
+             UseLayoutRounding="False"
              BorderBrush="{StaticResource DividerColor}"
-             BorderThickness="0,0,1,0"
+             BorderThickness="0,0,0.5,0"
              DragDrop.AllowDrop="True">
 
     <UserControl.Styles>

@@ -28,10 +28,20 @@
             <Setter Property="Background" Value="Transparent" />
         </Style>
         <Style Selector="ListBox.logEntryList ListBoxItem:selected /template/ ContentPresenter#PART_ContentPresenter">
-            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Background" Value="#094771" />
         </Style>
         <Style Selector="ListBox.logEntryList ListBoxItem:pointerover /template/ ContentPresenter#PART_ContentPresenter">
             <Setter Property="Background" Value="Transparent" />
+        </Style>
+
+        <!-- Context menu styling -->
+        <Style Selector="MenuFlyoutPresenter">
+            <Setter Property="Background" Value="#2D2D2D" />
+        </Style>
+        <Style Selector="MenuItem.logContextMenuItem">
+            <Setter Property="Background" Value="#2D2D2D" />
+            <Setter Property="Foreground" Value="#CCCCCC" />
+            <Setter Property="FontSize" Value="10" />
         </Style>
     </UserControl.Styles>
 
@@ -39,15 +49,27 @@
         <!-- Filter bar -->
         <Border Grid.Row="0" Padding="8,4">
             <ComboBox Classes="logLevelFilter"
+                      Width="100"
                       ItemsSource="{Binding AvailableLogLevels, Mode=OneWay}"
                       SelectedItem="{Binding SelectedLogLevel}" />
         </Border>
 
         <!-- Virtualized log entry list -->
         <ListBox Grid.Row="1"
+                 Name="LogEntryListBox"
                  Classes="logEntryList"
                  ItemsSource="{Binding FilteredEntries, Mode=OneWay}"
-                 SelectionMode="Single">
+                 SelectionMode="Multiple">
+            <ListBox.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Classes="logContextMenuItem"
+                              Header="Copy Selection"
+                              Click="OnCopySelectionClick" />
+                    <MenuItem Classes="logContextMenuItem"
+                              Header="Copy All"
+                              Click="OnCopyAllClick" />
+                </ContextMenu>
+            </ListBox.ContextMenu>
             <ListBox.ItemTemplate>
                 <DataTemplate x:DataType="vm:LogEntryViewModel">
                     <StackPanel Orientation="Horizontal" Spacing="8">

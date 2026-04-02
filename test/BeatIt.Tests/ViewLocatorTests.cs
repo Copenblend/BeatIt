@@ -22,7 +22,8 @@ public class ViewLocatorTests
     public void Match_ViewModelBaseSubtype_ReturnsTrue()
     {
         // Arrange
-        var viewModel = new MainWindowViewModel(Mock.Of<IWindowService>(), new ActivityBarViewModel(), new SideBarViewModel(), new PanelViewModel(new OutputTabViewModel()), new MenuBarViewModel());
+        var explorer = new ExplorerViewModel(Mock.Of<IFolderPickerService>(), Mock.Of<IFileSystemService>());
+        var viewModel = new MainWindowViewModel(Mock.Of<IWindowService>(), new ActivityBarViewModel(), new SideBarViewModel(explorer), new PanelViewModel(new OutputTabViewModel()), new MenuBarViewModel(explorer));
 
         // Act
         var result = _sut.Match(viewModel);
