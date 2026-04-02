@@ -13,14 +13,39 @@
         ExtendClientAreaTitleBarHeightHint="30">
 
     <Window.Styles>
-        <!-- Resize grip default style -->
+        <!-- Resize grip hit area (wide, transparent) -->
         <Style Selector="Border.resizeGrip">
             <Setter Property="Background" Value="Transparent" />
             <Setter Property="Cursor" Value="SizeWestEast" />
         </Style>
 
-        <!-- Resize grip active/dragging style -->
-        <Style Selector="Border.resizeGrip.dragging">
+        <!-- Resize grip visible line (1px, resting state) -->
+        <Style Selector="Border.resizeGrip Border.resizeGripLine">
+            <Setter Property="Background" Value="{StaticResource DividerColor}" />
+        </Style>
+
+        <!-- Resize grip visible line on hover -->
+        <Style Selector="Border.resizeGrip:pointerover Border.resizeGripLine">
+            <Setter Property="Background" Value="{StaticResource AccentColor}" />
+        </Style>
+
+        <!-- Resize grip visible line during drag -->
+        <Style Selector="Border.resizeGrip.dragging Border.resizeGripLine">
+            <Setter Property="Background" Value="{StaticResource AccentColor}" />
+        </Style>
+
+        <!-- Panel resize grip hit area -->
+        <Style Selector="Border.panelResizeGrip">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Cursor" Value="SizeNorthSouth" />
+        </Style>
+        <Style Selector="Border.panelResizeGrip Border.panelResizeGripLine">
+            <Setter Property="Background" Value="{StaticResource DividerColor}" />
+        </Style>
+        <Style Selector="Border.panelResizeGrip:pointerover Border.panelResizeGripLine">
+            <Setter Property="Background" Value="{StaticResource AccentColor}" />
+        </Style>
+        <Style Selector="Border.panelResizeGrip.dragging Border.panelResizeGripLine">
             <Setter Property="Background" Value="{StaticResource AccentColor}" />
         </Style>
 
@@ -44,6 +69,24 @@
         <!-- Close button hover override -->
         <Style Selector="Button.titleBarCloseButton:pointerover /template/ ContentPresenter#PART_ContentPresenter">
             <Setter Property="Background" Value="{StaticResource CloseButtonHover}" />
+        </Style>
+
+        <!-- Collapsed panel chevron button -->
+        <Style Selector="Button.panelChevronButton">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Foreground" Value="{StaticResource IconDefault}" />
+            <Setter Property="FontFamily" Value="{StaticResource CodiconFont}" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="Padding" Value="2" />
+            <Setter Property="MinWidth" Value="0" />
+            <Setter Property="MinHeight" Value="0" />
+        </Style>
+        <Style Selector="Button.panelChevronButton:pointerover">
+            <Setter Property="Foreground" Value="{StaticResource IconHover}" />
+        </Style>
+        <Style Selector="Button.panelChevronButton:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="Transparent" />
         </Style>
     </Window.Styles>
 
@@ -116,31 +159,63 @@
                                Width="{Binding Width, Mode=OneWay}"
                                IsVisible="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).ActivityBar.IsSideBarVisible, Mode=OneWay}" />
 
-            <!-- Resize grip (full height divider) -->
+            <!-- Resize grip (wide hit area with 1px visible divider) -->
             <Border Name="ResizeGrip"
                     Grid.Column="2"
                     Classes="resizeGrip"
-                    Width="4"
+                    Width="8"
                     IsVisible="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).ActivityBar.IsSideBarVisible, Mode=OneWay}"
                     PointerPressed="OnResizeGripPointerPressed"
                     PointerMoved="OnResizeGripPointerMoved"
-                    PointerReleased="OnResizeGripPointerReleased" />
+                    PointerReleased="OnResizeGripPointerReleased">
+                <Border Classes="resizeGripLine"
+                        Width="1"
+                        HorizontalAlignment="Right" />
+            </Border>
 
             <!-- Workspace + Panel split -->
-            <Grid Grid.Column="3" RowDefinitions="*,Auto">
+            <Grid Grid.Column="3" RowDefinitions="*,Auto,Auto">
 
                 <!-- Workspace -->
                 <Border Name="WorkspaceZone"
                         Grid.Row="0"
                         Background="{StaticResource WorkspaceBackground}" />
 
-                <!-- Panel -->
-                <Border Name="PanelZone"
+                <!-- Panel resize grip -->
+                <Border Name="PanelResizeGrip"
                         Grid.Row="1"
+                        Classes="panelResizeGrip"
+                        Height="8"
+                        IsVisible="{Binding Panel.IsVisible, Mode=OneWay}"
+                        PointerPressed="OnPanelResizeGripPointerPressed"
+                        PointerMoved="OnPanelResizeGripPointerMoved"
+                        PointerReleased="OnPanelResizeGripPointerReleased">
+                    <Border Classes="panelResizeGripLine"
+                            Height="1"
+                            VerticalAlignment="Top" />
+                </Border>
+
+                <!-- Panel -->
+                <views:PanelView Name="PanelZone"
+                                 Grid.Row="2"
+                                 DataContext="{Binding Panel}"
+                                 Height="{Binding Height, Mode=OneWay}"
+                                 IsVisible="{Binding IsVisible, Mode=OneWay}" />
+
+                <!-- Collapsed panel bar (shown when panel is hidden) -->
+                <Border Name="CollapsedPanelBar"
+                        Grid.Row="2"
+                        Height="22"
                         Background="{StaticResource WorkbenchBackground}"
-                        Height="200"
                         BorderBrush="{StaticResource DividerColor}"
-                        BorderThickness="0,1,0,0" />
+                        BorderThickness="0,1,0,0"
+                        IsVisible="{Binding !Panel.IsVisible, Mode=OneWay}">
+                    <Button Classes="panelChevronButton"
+                            Content="&#xEAB7;"
+                            Command="{Binding Panel.TogglePanelCommand, Mode=OneWay}"
+                            HorizontalAlignment="Left"
+                            Margin="4,0,0,0" />
+                </Border>
             </Grid>
         </Grid>
 

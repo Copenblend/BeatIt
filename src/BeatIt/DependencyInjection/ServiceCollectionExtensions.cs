@@ -41,6 +41,8 @@ public static class ServiceCollectionExtensions
         services.AddTransient<StatusBarViewModel>();
         services.AddSingleton<ActivityBarViewModel>();
         services.AddSingleton<SideBarViewModel>();
+        services.AddSingleton<OutputTabViewModel>();
+        services.AddSingleton<PanelViewModel>();
         return services;
     }
 
@@ -59,6 +61,8 @@ public static class ServiceCollectionExtensions
         services.AddTransient<ActivityBarView>();
         services.AddTransient<StatusBarView>();
         services.AddTransient<SideBarView>();
+        services.AddTransient<PanelView>();
+        services.AddTransient<OutputTabView>();
         return services;
     }
 }

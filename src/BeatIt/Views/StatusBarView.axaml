@@ -12,7 +12,7 @@
         <TextBlock Name="StatusTextBlock"
                    Text="{Binding StatusText, Mode=OneWay}"
                    FontFamily="Segoe UI"
-                   FontSize="12"
+                   FontSize="10"
                    Foreground="{StaticResource ForegroundDefault}"
                    VerticalAlignment="Center"
                    HorizontalAlignment="Right"

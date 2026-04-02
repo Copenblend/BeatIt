@@ -1,0 +1,60 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:BeatIt.ViewModels"
+             xmlns:views="using:BeatIt.Views"
+             x:Class="BeatIt.Views.PanelView"
+             x:DataType="vm:PanelViewModel"
+             Background="{StaticResource WorkbenchBackground}">
+
+    <UserControl.Styles>
+        <!-- Tab strip list: no chrome, horizontal -->
+        <Style Selector="ListBox.panelTabStrip">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Padding" Value="0" />
+        </Style>
+        <Style Selector="ListBox.panelTabStrip ListBoxItem">
+            <Setter Property="Padding" Value="8,4" />
+            <Setter Property="MinHeight" Value="0" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0,0,0,2" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+        </Style>
+        <Style Selector="ListBox.panelTabStrip ListBoxItem:selected">
+            <Setter Property="BorderBrush" Value="{StaticResource AccentColor}" />
+        </Style>
+        <Style Selector="ListBox.panelTabStrip ListBoxItem:selected /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="Transparent" />
+        </Style>
+        <Style Selector="ListBox.panelTabStrip ListBoxItem:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="Transparent" />
+        </Style>
+    </UserControl.Styles>
+
+    <Grid RowDefinitions="Auto,*">
+        <!-- Tab strip -->
+        <ListBox Grid.Row="0"
+                 Classes="panelTabStrip"
+                 Margin="8,2,0,4"
+                 ItemsSource="{Binding Tabs, Mode=OneWay}"
+                 SelectedItem="{Binding SelectedTab}">
+            <ListBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel Orientation="Horizontal" />
+                </ItemsPanelTemplate>
+            </ListBox.ItemsPanel>
+            <ListBox.ItemTemplate>
+                <DataTemplate x:DataType="vm:PanelTabViewModel">
+                    <TextBlock Text="{Binding Title, Mode=OneWay, Converter={x:Static views:UpperCaseConverter.Instance}}"
+                               FontSize="10"
+                               Foreground="{StaticResource ForegroundDefault}"
+                               VerticalAlignment="Center" />
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+
+        <!-- Tab content (resolved via ViewLocator) -->
+        <ContentControl Grid.Row="1"
+                        Content="{Binding SelectedTab, Mode=OneWay}" />
+    </Grid>
+</UserControl>

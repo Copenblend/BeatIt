@@ -4,9 +4,7 @@
              x:Class="BeatIt.Views.SideBarView"
              x:DataType="vm:SideBarViewModel"
              Background="{StaticResource WorkbenchBackground}"
-             UseLayoutRounding="True"
-             BorderBrush="{StaticResource DividerColor}"
-             BorderThickness="0,0,1,0">
+             UseLayoutRounding="True">
 
     <UserControl.Styles>
         <!-- Open Folder button style -->
@@ -28,7 +26,7 @@
         <Border Grid.Row="0" Height="26">
             <TextBlock Name="SideBarHeaderText"
                        Text="EXPLORER"
-                       FontSize="11"
+                       FontSize="10"
                        FontWeight="Light"
                        Foreground="{StaticResource ForegroundDefault}"
                        LetterSpacing="1"

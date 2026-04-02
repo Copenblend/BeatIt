@@ -1,3 +1,5 @@
+using System.ComponentModel;
+
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
@@ -27,6 +29,11 @@ public partial class MainWindowViewModel : ViewModelBase
     public SideBarViewModel SideBar { get; }
 
     /// <summary>
+    /// Gets the panel view model for binding the bottom panel tabs and content.
+    /// </summary>
+    public PanelViewModel Panel { get; }
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="MainWindowViewModel"/> class.
     /// </summary>
     /// <param name="windowService">
@@ -38,12 +45,40 @@ public partial class MainWindowViewModel : ViewModelBase
     /// <param name="sideBar">
     /// The side bar view model providing side bar width, content, and resize behavior.
     /// </param>
-    public MainWindowViewModel(IWindowService windowService, ActivityBarViewModel activityBar, SideBarViewModel sideBar)
+    /// <param name="panel">
+    /// The panel view model providing bottom panel tabs and content.
+    /// </param>
+    public MainWindowViewModel(IWindowService windowService, ActivityBarViewModel activityBar, SideBarViewModel sideBar, PanelViewModel panel)
     {
         _windowService = windowService;
         _isMaximized = _windowService.IsMaximized;
         ActivityBar = activityBar;
         SideBar = sideBar;
+        Panel = panel;
+
+        ActivityBar.PropertyChanged += OnActivityBarPropertyChanged;
+    }
+
+    /// <summary>
+    /// Handles property changes on the activity bar view model.
+    /// Restores the side bar width to <see cref="SideBarViewModel.DefaultWidth"/>
+    /// when <see cref="ActivityBarViewModel.SelectedItem"/> becomes non-null
+    /// and the side bar width is zero (e.g., after a drag-snap close).
+    /// </summary>
+    /// <param name="sender">
+    /// The source of the event.
+    /// </param>
+    /// <param name="e">
+    /// The event arguments containing the changed property name.
+    /// </param>
+    private void OnActivityBarPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(ActivityBarViewModel.SelectedItem)
+            && ActivityBar.SelectedItem is not null
+            && SideBar.Width == 0)
+        {
+            SideBar.Width = SideBarViewModel.DefaultWidth;
+        }
     }
 
     /// <summary>
