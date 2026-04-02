@@ -34,6 +34,11 @@ public partial class MainWindowViewModel : ViewModelBase
     public PanelViewModel Panel { get; }
 
     /// <summary>
+    /// Gets the menu bar view model for binding menu items and commands.
+    /// </summary>
+    public MenuBarViewModel MenuBar { get; }
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="MainWindowViewModel"/> class.
     /// </summary>
     /// <param name="windowService">
@@ -48,13 +53,17 @@ public partial class MainWindowViewModel : ViewModelBase
     /// <param name="panel">
     /// The panel view model providing bottom panel tabs and content.
     /// </param>
-    public MainWindowViewModel(IWindowService windowService, ActivityBarViewModel activityBar, SideBarViewModel sideBar, PanelViewModel panel)
+    /// <param name="menuBar">
+    /// The menu bar view model providing menu items and commands.
+    /// </param>
+    public MainWindowViewModel(IWindowService windowService, ActivityBarViewModel activityBar, SideBarViewModel sideBar, PanelViewModel panel, MenuBarViewModel menuBar)
     {
         _windowService = windowService;
         _isMaximized = _windowService.IsMaximized;
         ActivityBar = activityBar;
         SideBar = sideBar;
         Panel = panel;
+        MenuBar = menuBar;
 
         ActivityBar.PropertyChanged += OnActivityBarPropertyChanged;
     }

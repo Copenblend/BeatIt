@@ -32,7 +32,8 @@ public class MainWindowTests
         var activityBar = new ActivityBarViewModel();
         var sideBar = new SideBarViewModel();
         var panel = new PanelViewModel(new OutputTabViewModel());
-        var viewModel = new MainWindowViewModel(windowService, activityBar, sideBar, panel);
+        var menuBar = new MenuBarViewModel();
+        var viewModel = new MainWindowViewModel(windowService, activityBar, sideBar, panel, menuBar);
         return new MainWindow { DataContext = viewModel };
     }
 
@@ -73,16 +74,37 @@ public class MainWindowTests
     }
 
     /// <summary>
-    /// Verifies that the MenuBarPlaceholder control exists in the visual tree.
+    /// Verifies that the <see cref="MenuBarView"/> named <c>MenuBarZone</c>
+    /// exists in the visual tree.
     /// </summary>
     [AvaloniaFact]
-    public void MenuBarPlaceholder_ExistsInVisualTree()
+    public void MenuBarZone_ExistsInVisualTree()
     {
         // Arrange
         var window = CreateWindow();
 
         // Act & Assert
-        window.FindControl<ContentControl>("MenuBarPlaceholder").Should().NotBeNull();
+        window.FindControl<MenuBarView>("MenuBarZone").Should().NotBeNull();
+    }
+
+    /// <summary>
+    /// Verifies that the <see cref="MenuBarView"/> renders a <see cref="Menu"/>
+    /// named <c>MainMenu</c> containing one top-level File menu item.
+    /// </summary>
+    [AvaloniaFact]
+    public void MenuBar_RendersWithFileMenu()
+    {
+        // Arrange
+        var window = CreateWindow();
+        var menuBarView = window.FindControl<MenuBarView>("MenuBarZone");
+        menuBarView.Should().NotBeNull();
+
+        // Act
+        var menu = menuBarView!.FindControl<Menu>("MainMenu");
+
+        // Assert
+        menu.Should().NotBeNull();
+        menu!.Items.Should().HaveCount(1);
     }
 
     /// <summary>
