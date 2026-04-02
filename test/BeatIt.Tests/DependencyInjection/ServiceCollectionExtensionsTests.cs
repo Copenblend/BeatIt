@@ -213,4 +213,80 @@ public sealed class ServiceCollectionExtensionsTests
             d.ServiceType == typeof(SideBarView)
             && d.Lifetime == ServiceLifetime.Transient);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="ServiceCollectionExtensions.AddViewModels"/>
+    /// registers <see cref="OutputTabViewModel"/> as a singleton service.
+    /// </summary>
+    [Fact]
+    public void AddViewModels_RegistersOutputTabViewModelAsSingleton()
+    {
+        // Arrange
+        var services = new ServiceCollection();
+
+        // Act
+        services.AddViewModels();
+
+        // Assert
+        services.Should().ContainSingle(d =>
+            d.ServiceType == typeof(OutputTabViewModel)
+            && d.Lifetime == ServiceLifetime.Singleton);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="ServiceCollectionExtensions.AddViewModels"/>
+    /// registers <see cref="PanelViewModel"/> as a singleton service.
+    /// </summary>
+    [Fact]
+    public void AddViewModels_RegistersPanelViewModelAsSingleton()
+    {
+        // Arrange
+        var services = new ServiceCollection();
+
+        // Act
+        services.AddViewModels();
+
+        // Assert
+        services.Should().ContainSingle(d =>
+            d.ServiceType == typeof(PanelViewModel)
+            && d.Lifetime == ServiceLifetime.Singleton);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="ServiceCollectionExtensions.AddViews"/>
+    /// registers <see cref="PanelView"/> as a transient service.
+    /// </summary>
+    [Fact]
+    public void AddViews_RegistersPanelViewAsTransient()
+    {
+        // Arrange
+        var services = new ServiceCollection();
+
+        // Act
+        services.AddViews();
+
+        // Assert
+        services.Should().ContainSingle(d =>
+            d.ServiceType == typeof(PanelView)
+            && d.Lifetime == ServiceLifetime.Transient);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="ServiceCollectionExtensions.AddViews"/>
+    /// registers <see cref="OutputTabView"/> as a transient service.
+    /// </summary>
+    [Fact]
+    public void AddViews_RegistersOutputTabViewAsTransient()
+    {
+        // Arrange
+        var services = new ServiceCollection();
+
+        // Act
+        services.AddViews();
+
+        // Assert
+        services.Should().ContainSingle(d =>
+            d.ServiceType == typeof(OutputTabView)
+            && d.Lifetime == ServiceLifetime.Transient);
+    }
 }

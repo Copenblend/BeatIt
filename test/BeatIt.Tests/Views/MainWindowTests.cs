@@ -31,7 +31,8 @@ public class MainWindowTests
         var windowService = Mock.Of<IWindowService>();
         var activityBar = new ActivityBarViewModel();
         var sideBar = new SideBarViewModel();
-        var viewModel = new MainWindowViewModel(windowService, activityBar, sideBar);
+        var panel = new PanelViewModel(new OutputTabViewModel());
+        var viewModel = new MainWindowViewModel(windowService, activityBar, sideBar, panel);
         return new MainWindow { DataContext = viewModel };
     }
 
@@ -50,7 +51,7 @@ public class MainWindowTests
         window.FindControl<ActivityBarView>("ActivityBarZone").Should().NotBeNull();
         window.FindControl<SideBarView>("SideBarZone").Should().NotBeNull();
         window.FindControl<Border>("WorkspaceZone").Should().NotBeNull();
-        window.FindControl<Border>("PanelZone").Should().NotBeNull();
+        window.FindControl<PanelView>("PanelZone").Should().NotBeNull();
         window.FindControl<StatusBarView>("StatusBarZone").Should().NotBeNull();
         window.FindControl<Border>("TitleBarDragRegion").Should().NotBeNull();
     }
@@ -192,5 +193,65 @@ public class MainWindowTests
 
         // Assert
         resizeGrip.Should().NotBeNull();
+    }
+
+    /// <summary>
+    /// Verifies that the <see cref="PanelView"/> named <c>PanelZone</c>
+    /// exists in the <see cref="MainWindow"/> visual tree.
+    /// </summary>
+    [AvaloniaFact]
+    public void PanelZone_ExistsInVisualTree()
+    {
+        // Arrange
+        var window = CreateWindow();
+
+        // Act
+        var panelZone = window.FindControl<PanelView>("PanelZone");
+
+        // Assert
+        panelZone.Should().NotBeNull();
+    }
+
+    /// <summary>
+    /// Verifies that the panel resize grip <see cref="Border"/> named
+    /// <c>PanelResizeGrip</c> exists in the <see cref="MainWindow"/> visual tree.
+    /// </summary>
+    [AvaloniaFact]
+    public void PanelResizeGrip_ExistsInVisualTree()
+    {
+        // Arrange
+        var window = CreateWindow();
+
+        // Act
+        var panelResizeGrip = window.FindControl<Border>("PanelResizeGrip");
+
+        // Assert
+        panelResizeGrip.Should().NotBeNull();
+    }
+
+    /// <summary>
+    /// Verifies that the <see cref="Border"/> named "CollapsedPanelBar" exists in the visual tree.
+    /// </summary>
+    [AvaloniaFact]
+    public void CollapsedPanelBar_ExistsInVisualTree()
+    {
+        // Arrange
+        var window = CreateWindow();
+
+        // Act & Assert
+        window.FindControl<Border>("CollapsedPanelBar").Should().NotBeNull();
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="OutputTabView"/> can be instantiated and has its XAML loaded.
+    /// </summary>
+    [AvaloniaFact]
+    public void OutputTabView_CanBeInstantiated()
+    {
+        // Arrange & Act
+        var view = new OutputTabView();
+
+        // Assert
+        view.Should().NotBeNull();
     }
 }
