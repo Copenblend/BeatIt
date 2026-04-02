@@ -27,14 +27,7 @@ public partial class MenuBarViewModel : ViewModelBase
     public IRelayCommand OpenFolderCommand => _explorerViewModel.OpenFolderCommand;
 
     /// <summary>
-    /// Closes the currently open folder in the workspace.
+    /// Gets the command that closes the currently open folder.
     /// </summary>
-    /// <remarks>
-    /// This is a placeholder command that will be wired to real
-    /// folder-close logic in a future slice.
-    /// </remarks>
-    [RelayCommand]
-    private void CloseFolder()
-    {
-    }
+    public IRelayCommand CloseFolderCommand => _explorerViewModel.CloseFolderCommand;
 }

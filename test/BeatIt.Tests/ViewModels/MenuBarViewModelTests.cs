@@ -54,10 +54,30 @@ public sealed class MenuBarViewModelTests
     }
 
     [Fact]
-    public void CloseFolderCommand_CanExecute_ReturnsTrue()
+    public void CloseFolderCommand_CanExecute_ReturnsFalseWhenNoFolder()
     {
         // Arrange
         var sut = new MenuBarViewModel(CreateExplorerViewModel());
+
+        // Act & Assert
+        sut.CloseFolderCommand.CanExecute(null).Should().BeFalse();
+    }
+
+    [Fact]
+    public async Task CloseFolderCommand_CanExecute_ReturnsTrueWhenFolderOpen()
+    {
+        // Arrange
+        var mockPicker = new Mock<IFolderPickerService>();
+        mockPicker.Setup(p => p.PickFolderAsync())
+            .ReturnsAsync(@"C:\test\MyFolder");
+
+        var mockFs = new Mock<IFileSystemService>();
+        mockFs.Setup(fs => fs.GetEntriesAsync(@"C:\test\MyFolder"))
+            .ReturnsAsync(Array.Empty<FileSystemEntry>());
+
+        var explorer = new ExplorerViewModel(mockPicker.Object, mockFs.Object);
+        await explorer.OpenFolderCommand.ExecuteAsync(null);
+        var sut = new MenuBarViewModel(explorer);
 
         // Act & Assert
         sut.CloseFolderCommand.CanExecute(null).Should().BeTrue();
@@ -77,16 +97,40 @@ public sealed class MenuBarViewModelTests
     }
 
     [Fact]
-    public void CloseFolderCommand_Execute_DoesNotThrow()
+    public async Task CloseFolderCommand_Execute_DoesNotThrow()
     {
         // Arrange
-        var sut = new MenuBarViewModel(CreateExplorerViewModel());
+        var mockPicker = new Mock<IFolderPickerService>();
+        mockPicker.Setup(p => p.PickFolderAsync())
+            .ReturnsAsync(@"C:\test\MyFolder");
+
+        var mockFs = new Mock<IFileSystemService>();
+        mockFs.Setup(fs => fs.GetEntriesAsync(@"C:\test\MyFolder"))
+            .ReturnsAsync(Array.Empty<FileSystemEntry>());
+
+        var explorer = new ExplorerViewModel(mockPicker.Object, mockFs.Object);
+        await explorer.OpenFolderCommand.ExecuteAsync(null);
+        var sut = new MenuBarViewModel(explorer);
 
         // Act
         var act = () => sut.CloseFolderCommand.Execute(null);
 
         // Assert
         act.Should().NotThrow();
+    }
+
+    /// <summary>
+    /// Verifies that the CloseFolderCommand delegates to the ExplorerViewModel's CloseFolderCommand.
+    /// </summary>
+    [Fact]
+    public void CloseFolderCommand_DelegatesToExplorerViewModel()
+    {
+        // Arrange
+        var explorer = CreateExplorerViewModel();
+        var sut = new MenuBarViewModel(explorer);
+
+        // Act & Assert
+        sut.CloseFolderCommand.Should().BeSameAs(explorer.CloseFolderCommand);
     }
 
     /// <summary>

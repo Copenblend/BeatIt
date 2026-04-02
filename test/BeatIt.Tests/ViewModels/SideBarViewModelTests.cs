@@ -238,6 +238,64 @@ public sealed class SideBarViewModelTests
     }
 
     /// <summary>
+    /// Verifies that closing the explorer folder clears the side bar content.
+    /// </summary>
+    [Fact]
+    public async Task ExplorerFolderClosed_ClearsSideBarContent()
+    {
+        // Arrange
+        var mockPicker = new Mock<IFolderPickerService>();
+        mockPicker.Setup(p => p.PickFolderAsync())
+            .ReturnsAsync(@"C:\test\MyFolder");
+
+        var mockFs = new Mock<IFileSystemService>();
+        mockFs.Setup(fs => fs.GetEntriesAsync(@"C:\test\MyFolder"))
+            .ReturnsAsync(Array.Empty<FileSystemEntry>());
+
+        var explorer = new ExplorerViewModel(mockPicker.Object, mockFs.Object);
+        var sut = new SideBarViewModel(explorer);
+
+        await explorer.OpenFolderCommand.ExecuteAsync(null);
+        sut.SideBarContent.Should().BeSameAs(explorer);
+
+        // Act
+        explorer.CloseFolderCommand.Execute(null);
+
+        // Assert
+        sut.SideBarContent.Should().BeNull();
+        sut.HasContent.Should().BeFalse();
+    }
+
+    /// <summary>
+    /// Verifies that closing a folder does not affect side bar visibility
+    /// (no interaction with ActivityBarViewModel).
+    /// </summary>
+    [Fact]
+    public async Task CloseFolderCommand_DoesNotAffectSideBarVisibility()
+    {
+        // Arrange
+        var mockPicker = new Mock<IFolderPickerService>();
+        mockPicker.Setup(p => p.PickFolderAsync())
+            .ReturnsAsync(@"C:\test\MyFolder");
+
+        var mockFs = new Mock<IFileSystemService>();
+        mockFs.Setup(fs => fs.GetEntriesAsync(@"C:\test\MyFolder"))
+            .ReturnsAsync(Array.Empty<FileSystemEntry>());
+
+        var explorer = new ExplorerViewModel(mockPicker.Object, mockFs.Object);
+        var sut = new SideBarViewModel(explorer);
+
+        await explorer.OpenFolderCommand.ExecuteAsync(null);
+
+        // Act
+        explorer.CloseFolderCommand.Execute(null);
+
+        // Assert — only SideBarContent is affected, not visibility
+        sut.SideBarContent.Should().BeNull();
+        sut.Width.Should().Be(SideBarViewModel.DefaultWidth);
+    }
+
+    /// <summary>
     /// Creates a default <see cref="ExplorerViewModel"/> with mocked dependencies.
     /// </summary>
     /// <returns>
